@@ -31,7 +31,7 @@ public class ModeloTablaVentas extends AbstractTableModel {
         switch (columnIndex){
             case 0: return item.getProducto().getCodigo();
             case 1: return item.getProducto().getNombre();
-            case 2: return item.getProducto().getPrecio();
+            case 2: return item.getPrecioUnitario();
             case 3: return item.getCantidad();
             case 4 : return item.getSubtotal();
             default: return null;
@@ -39,14 +39,14 @@ public class ModeloTablaVentas extends AbstractTableModel {
     }
 
     public void setProductos(List<ItemVentaUI> lista){
-        this.lista=lista;
+        this.lista = lista != null ? lista : new ArrayList<>();
         fireTableDataChanged();//actualiza la tabla
     }
     public void addProducto(ItemVentaUI item){
         this.lista.add(item);
         fireTableDataChanged();
     }
-    public List<ItemVentaUI> getProdcutos(){
+    public List<ItemVentaUI> getProductos(){
         return this.lista;
     }
     public ItemVentaUI getProductoAt(int rowIndex){
@@ -57,18 +57,25 @@ public class ModeloTablaVentas extends AbstractTableModel {
     }
     @Override
     public boolean isCellEditable(int row, int col) {
-        return col == 3;
+        return col == 2 || col == 3;
     }
     @Override
     public void setValueAt(Object aValue, int row, int col) {
+        if(col == 2) {
+            try {
+                double precio = Math.max(0, Double.parseDouble(aValue.toString()));
+                lista.get(row).setPrecioUnitario(precio);
+                fireTableRowsUpdated(row, row);
+            } catch (NumberFormatException e) {}
+        }
+
         if(col == 3) {
             try {
                 int cantidad = Math.max(1, Integer.parseInt(aValue.toString()));
                 lista.get(row).setCantidad(cantidad);
-                fireTableRowsUpdated(row, row); // recalcula subtotal
-            } catch(NumberFormatException e) {
-                // ignorar o mostrar mensaje
-            }
+                fireTableRowsUpdated(row, row);
+            } catch (NumberFormatException e) {}
         }
+
     }
 }

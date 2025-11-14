@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.Enum.Categoria;
+import com.example.demo.Enum.MetodoPago;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,18 +16,20 @@ public class Venta {
 
     private LocalDateTime fecha;
     private double total;
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DetalleVenta> detalles;
-
+    @Enumerated(EnumType.STRING)
+    private MetodoPago metodoPago;
     public Venta() {
         detalles=new ArrayList<>();
     }
 
-    public Venta(Long id, LocalDateTime fecha, double total, List<DetalleVenta> detalles) {
+    public Venta(Long id, LocalDateTime fecha, double total, List<DetalleVenta> detalles,MetodoPago metodoPago) {
         this.id = id;
         this.fecha = fecha;
         this.total = total;
         this.detalles = detalles;
+        this.metodoPago=metodoPago;
     }
 
     public Long getId() {
@@ -62,6 +64,12 @@ public class Venta {
         this.detalles = detalles;
     }
 
+    public MetodoPago getMetodoPago(){
+        return this.metodoPago;
+    }
+    public void setMetodoPago(MetodoPago metodoPago){
+        this.metodoPago=metodoPago;
+    }
     @Override
     public String toString() {
         return "Venta{" +
@@ -69,6 +77,7 @@ public class Venta {
                 ", fecha=" + fecha +
                 ", total=" + total +
                 ", detalles=" + detalles +
+                ", metodo de pago=" + metodoPago +
                 '}';
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.GUI.base.PlantillaPanelProductos;
 import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.entity.Producto;
 import com.example.demo.service.ProductoService;
+import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -12,9 +13,9 @@ import java.awt.*;
 @Component
 public class PanelProductos extends PlantillaPanelProductos {
 
-    public PanelProductos(ProductoService productoService, EventBus eventBus) {
+    public PanelProductos(ProductoService productoService, VentaService ventaService, EventBus eventBus) {
 
-        super(productoService,eventBus);
+        super(productoService,ventaService,eventBus);
         inicializarComponentes();
     }
 

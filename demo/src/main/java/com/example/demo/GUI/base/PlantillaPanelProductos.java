@@ -1,15 +1,23 @@
 package com.example.demo.GUI.base;
 
+import com.example.demo.Enum.MetodoPago;
 import com.example.demo.GUI.listener.EventBus;
+import com.example.demo.GUI.tablas.ItemVentaUI;
 import com.example.demo.GUI.tablas.ModeloTablaProductos;
+import com.example.demo.GUI.tablas.ModeloTablaVentas;
 import com.example.demo.dto.ProductoDto;
+import com.example.demo.dto.VentaDto;
+import com.example.demo.entity.DetalleVenta;
 import com.example.demo.entity.Producto;
+import com.example.demo.entity.Venta;
 import com.example.demo.exception.ProductoDuplicadoException;
 import com.example.demo.service.ProductoService;
+import com.example.demo.service.VentaService;
 
 import javax.swing.*;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +26,13 @@ public abstract class PlantillaPanelProductos extends BasePanel {
     protected JTable tabla;
     protected ModeloTablaProductos modeloTabla;
     protected final ProductoService productoService;
+    protected final VentaService ventaService;
     protected JPanel panelCentral;
 
-    public PlantillaPanelProductos(ProductoService productoService,EventBus eventBus){
+    public PlantillaPanelProductos(ProductoService productoService,VentaService ventaService,EventBus eventBus){
         super(eventBus);
         this.productoService = productoService;
+        this.ventaService=ventaService;
         panelCentral = new JPanel(new BorderLayout());
 
     }
@@ -39,19 +49,6 @@ public abstract class PlantillaPanelProductos extends BasePanel {
 
         TableRowSorter<ModeloTablaProductos> sorter = new TableRowSorter<>(modeloTabla);
         tabla.setRowSorter(sorter);
-
-        //--------listener para eventos de cada subclase-----------
-        /*tabla.getSelectionModel().addListSelectionListener(e->{
-            if(!e.getValueIsAdjusting()){
-                int fila=tabla.getSelectedRow();
-                if(fila != -1){
-                    Producto producto = modeloTabla.getProductoAt(tabla.convertRowIndexToModel(fila));
-                    onProductoSeleccionado(producto);
-                }
-            }
-        });*/
-        //-------------------------
-
 
         panelCentral.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
@@ -127,5 +124,29 @@ public abstract class PlantillaPanelProductos extends BasePanel {
                 }
             }
         });
+    }
+    protected  void crearVenta(ModeloTablaVentas modeloDetalle,JComboBox<MetodoPago> metodoPago){
+
+        double total=0;
+        List<DetalleVenta> detalleVentas=new ArrayList<>();
+        for(ItemVentaUI item:modeloDetalle.getProductos()){
+            total+=item.getSubtotal();
+            DetalleVenta detalleActual=new DetalleVenta();
+            detalleActual.setProducto(item.getProducto());
+            detalleActual.setCantidad(item.getCantidad());
+            detalleActual.setPrecioUnitario(item.getPrecioUnitario());
+            //la venta no la seteamos porque no existe aun
+            detalleVentas.add(detalleActual);
+        }
+        //mapear esto a venta para persistirlo
+        VentaDto dto= VentaDto.builder()
+                .setDetalles(detalleVentas)
+                .setFecha(LocalDateTime.now())
+                .setTotal(total)
+                .setMetodoPago((MetodoPago) metodoPago.getSelectedItem())
+                .build();
+
+        Venta nuevaVenta=ventaService.create(dto);// para tiket o algo
+
     }
 }

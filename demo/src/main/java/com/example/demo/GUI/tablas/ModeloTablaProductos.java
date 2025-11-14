@@ -3,6 +3,7 @@ package com.example.demo.GUI.tablas;
 import com.example.demo.entity.Producto;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModeloTablaProductos extends AbstractTableModel {
@@ -51,7 +52,7 @@ public class ModeloTablaProductos extends AbstractTableModel {
     }
 
     public void setProductos(List<Producto> lista){
-        this.lista=lista;
+        this.lista = lista != null ? lista : new ArrayList<>();
         fireTableDataChanged();//actualiza la tabla
     }
     public List<Producto> getProdcutos(){

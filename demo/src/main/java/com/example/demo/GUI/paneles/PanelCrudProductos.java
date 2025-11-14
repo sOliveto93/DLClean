@@ -8,6 +8,7 @@ import com.example.demo.GUI.modals.VentanaEliminarProducto;
 import com.example.demo.dto.ProductoDto;
 import com.example.demo.entity.Producto;
 import com.example.demo.service.ProductoService;
+import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -40,8 +41,8 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
     private Producto productoSeleccionado;
 
-    public PanelCrudProductos(ProductoService productoService,EventBus eventBus) {
-        super(productoService,eventBus);
+    public PanelCrudProductos(ProductoService productoService,VentaService ventaService, EventBus eventBus) {
+        super(productoService,ventaService,eventBus);
         inicializarComponentes();
         productoSeleccionado = null;
     }

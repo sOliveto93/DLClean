@@ -1,20 +1,25 @@
 package com.example.demo.GUI.paneles;
 
-import com.example.demo.Enum.Categoria;
 import com.example.demo.Enum.MetodoPago;
 import com.example.demo.GUI.base.PlantillaPanelProductos;
 import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.GUI.tablas.ItemVentaUI;
-import com.example.demo.GUI.tablas.ModeloTablaProductos;
 import com.example.demo.GUI.tablas.ModeloTablaVentas;
+import com.example.demo.entity.DetalleVenta;
 import com.example.demo.entity.Producto;
+import com.example.demo.entity.Venta;
 import com.example.demo.service.ProductoService;
+import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class PanelVentaRapida extends PlantillaPanelProductos {
@@ -22,13 +27,13 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
     private JTable tablaDetalle;
     private ModeloTablaVentas modeloDetalle;
     private JButton btnMainPanel;
+    private JButton btnConfirmarCompra;
+    private JComboBox<MetodoPago>comboBoxmetodoPago;
 
-    private Producto productoSeleccionado;
-
-    public PanelVentaRapida(ProductoService productoService, EventBus eventBus){
-        super(productoService,eventBus);
+    public PanelVentaRapida(ProductoService productoService, VentaService ventaService, EventBus eventBus){
+        super(productoService,ventaService,eventBus);
         inicializarComponentes();
-        productoSeleccionado = null;
+
     }
 
     @Override
@@ -43,24 +48,23 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         btnMainPanel.addActionListener(e->eventBus.publish("mainPanel"));
         super.configurarTabla();
 
-
-
-        configurarSidePanels();
         panelHeader.add(btnMainPanel, BorderLayout.WEST);
         panelHeader.add(titulo, BorderLayout.CENTER);
         this.add(panelHeader,BorderLayout.NORTH);
         this.add(panelDetalleVenta,BorderLayout.CENTER);
+
+
         cargarProductos(null);
+        configurarEventos();
         agregarListenerDobleClick();
     }
 
-    public void configurarSidePanels(){}
 
     @Override
     protected void onProductoSeleccionado(Producto producto) {
         if(producto == null) return;
 
-        for (ItemVentaUI item : modeloDetalle.getProdcutos()) {
+        for (ItemVentaUI item : modeloDetalle.getProductos()) {
             if(item.getProducto().getCodigo() == producto.getCodigo()){
                 item.setCantidad(item.getCantidad() + 1); // suma 1
                 modeloDetalle.fireTableDataChanged();
@@ -75,7 +79,14 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         modeloDetalle=new ModeloTablaVentas();
         tablaDetalle=new JTable(modeloDetalle);
         panel.add(new JScrollPane(tablaDetalle),BorderLayout.CENTER);
-        panel.add( new JComboBox<>(MetodoPago.values()),BorderLayout.SOUTH);
+        JPanel panelConfirmarCompra=new JPanel(new BorderLayout());
+
+        btnConfirmarCompra=new JButton("Confirmar");
+        panelConfirmarCompra.add(btnConfirmarCompra,BorderLayout.SOUTH);
+        comboBoxmetodoPago=new JComboBox<>(MetodoPago.values());
+        panelConfirmarCompra.add( comboBoxmetodoPago,BorderLayout.NORTH);
+
+        panel.add(panelConfirmarCompra,BorderLayout.SOUTH);
         return panel;
     }
     public void agregarListenerDobleClick(){
@@ -91,5 +102,14 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
                 }
             }
         });
+    }
+    public void configurarEventos(){
+        btnConfirmarCompra.addActionListener(e->{
+            confirmarVenta();
+        });
+    }
+    public void confirmarVenta(){
+        super.crearVenta(modeloDetalle,comboBoxmetodoPago);
+        cargarProductos(null);
     }
 }
