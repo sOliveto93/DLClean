@@ -2,9 +2,9 @@ package com.example.demo.GUI.base;
 
 import com.example.demo.Enum.MetodoPago;
 import com.example.demo.GUI.listener.EventBus;
-import com.example.demo.GUI.tablas.ItemVentaUI;
-import com.example.demo.GUI.tablas.ModeloTablaProductos;
-import com.example.demo.GUI.tablas.ModeloTablaVentas;
+import com.example.demo.GUI.modeloTabla.ItemVentaUI;
+import com.example.demo.GUI.modeloTabla.ModeloTablaProductos;
+import com.example.demo.GUI.modeloTabla.ModeloTablaVentas;
 import com.example.demo.dto.ProductoDto;
 import com.example.demo.dto.VentaDto;
 import com.example.demo.entity.DetalleVenta;
@@ -104,6 +104,7 @@ public abstract class PlantillaPanelProductos extends BasePanel {
             return null;
         }
     }
+
     public boolean eliminarProducto(Producto producto){
         return productoService.deleteByCodigo(producto.getCodigo());
     }

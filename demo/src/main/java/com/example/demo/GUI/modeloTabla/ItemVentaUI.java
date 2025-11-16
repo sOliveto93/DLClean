@@ -1,4 +1,4 @@
-package com.example.demo.GUI.tablas;
+package com.example.demo.GUI.modeloTabla;
 
 import com.example.demo.entity.Producto;
 

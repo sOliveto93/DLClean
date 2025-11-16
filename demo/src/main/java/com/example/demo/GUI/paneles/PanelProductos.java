@@ -15,7 +15,7 @@ public class PanelProductos extends PlantillaPanelProductos {
 
     public PanelProductos(ProductoService productoService, VentaService ventaService, EventBus eventBus) {
 
-        super(productoService,ventaService,eventBus);
+        super(productoService, ventaService, eventBus);
         inicializarComponentes();
     }
 
@@ -23,14 +23,14 @@ public class PanelProductos extends PlantillaPanelProductos {
     protected void inicializarComponentes() {
         this.setLayout(new BorderLayout());
         agregarPanelPlantilla(BorderLayout.CENTER);
-        JPanel panelHeader=new JPanel(new BorderLayout());
-        JButton btnMainPanel=new JButton("Inicio");
-        btnMainPanel.addActionListener((e)->eventBus.publish("mainPanel"));
+        JPanel panelHeader = new JPanel(new BorderLayout());
+        JButton btnMainPanel = new JButton("Inicio");
+        btnMainPanel.addActionListener((e) -> eventBus.publish("mainPanel"));
         JLabel titulo = new JLabel("Gestion de Productos", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         panelHeader.add(titulo, BorderLayout.CENTER);
-        panelHeader.add(btnMainPanel,BorderLayout.WEST);
-        this.add(panelHeader,BorderLayout.NORTH);
+        panelHeader.add(btnMainPanel, BorderLayout.WEST);
+        this.add(panelHeader, BorderLayout.NORTH);
         super.configurarTabla();
         configurarSidePanels();
         agregarListenerSeleccionParaLista();

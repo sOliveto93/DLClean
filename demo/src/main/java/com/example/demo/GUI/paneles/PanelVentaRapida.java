@@ -3,11 +3,9 @@ package com.example.demo.GUI.paneles;
 import com.example.demo.Enum.MetodoPago;
 import com.example.demo.GUI.base.PlantillaPanelProductos;
 import com.example.demo.GUI.listener.EventBus;
-import com.example.demo.GUI.tablas.ItemVentaUI;
-import com.example.demo.GUI.tablas.ModeloTablaVentas;
-import com.example.demo.entity.DetalleVenta;
+import com.example.demo.GUI.modeloTabla.ItemVentaUI;
+import com.example.demo.GUI.modeloTabla.ModeloTablaVentas;
 import com.example.demo.entity.Producto;
-import com.example.demo.entity.Venta;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
@@ -17,9 +15,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class PanelVentaRapida extends PlantillaPanelProductos {

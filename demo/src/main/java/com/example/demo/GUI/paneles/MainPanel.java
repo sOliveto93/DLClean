@@ -9,7 +9,7 @@ import java.awt.*;
 
 @Component
 public class MainPanel extends BasePanel {
-    JButton botonCrudProducto,botonProductos,botonVentaRapida;
+    JButton botonCrudProducto,botonProductos,botonVentaRapida,botonReportes;
 
 
     public MainPanel(EventBus eventBus){
@@ -28,13 +28,16 @@ public class MainPanel extends BasePanel {
         botonCrudProducto=new JButton("CRUD PRODUCTOS");
         botonProductos=new JButton("Inventario");
         botonVentaRapida=new JButton("Venta Rapida");
+        botonReportes=new JButton("Reportes");
         botonProductos.addActionListener((e)->eventBus.publish("panelProductos"));
         botonCrudProducto.addActionListener((e)->eventBus.publish("panelCrudProductos"));
         botonVentaRapida.addActionListener(e->eventBus.publish("panelVentaRapida"));
+        botonReportes.addActionListener((e)->eventBus.publish("panelReportes"));
         JPanel panelBotones = new JPanel(new FlowLayout());
         panelBotones.add(botonProductos);
         panelBotones.add(botonCrudProducto);
         panelBotones.add(botonVentaRapida);
+        panelBotones.add(botonReportes);
         this.add(panelBotones, BorderLayout.CENTER);
     }
 }

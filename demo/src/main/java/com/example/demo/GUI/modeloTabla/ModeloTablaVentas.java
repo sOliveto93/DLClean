@@ -1,6 +1,4 @@
-package com.example.demo.GUI.tablas;
-
-import com.example.demo.entity.Producto;
+package com.example.demo.GUI.modeloTabla;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
