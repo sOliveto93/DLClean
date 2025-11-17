@@ -28,7 +28,8 @@ public class Ventana  extends JFrame  {
         suscribirseAEVento("panelProductos");
         suscribirseAEVento("panelCrudProductos");
         suscribirseAEVento("panelVentaRapida");
-        suscribirseAEVento("panelReportes");
+        suscribirseAEVento("panelReporteMasVendido");
+        suscribirseAEVento("panelReporteVentas");
         configurarVentana();
 
 

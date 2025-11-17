@@ -23,7 +23,9 @@ public class DetalleVentaService {
     }
 
     public List<ProductoMasVendidoDto> getProductosMasVendidos(LocalDateTime inicio, LocalDateTime fin) {
-        System.out.println("servicio");
         return dvr.productosMasVendidos(inicio, fin);
+    }
+    public List<DetalleVenta> getDetallesByIdVenta(Long id) {
+        return dvr.findByVentaId(id);
     }
 }

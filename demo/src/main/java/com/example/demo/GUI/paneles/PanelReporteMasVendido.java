@@ -2,7 +2,7 @@ package com.example.demo.GUI.paneles;
 
 import com.example.demo.GUI.base.BasePanel;
 import com.example.demo.GUI.listener.EventBus;
-import com.example.demo.GUI.modeloTabla.ModeloTablaReportes;
+import com.example.demo.GUI.modeloTabla.ModeloTablaReportesProductoMasVendido;
 import com.example.demo.dto.ProductoMasVendidoDto;
 import com.example.demo.service.DetalleVentaService;
 import com.example.demo.utils.ExportarCsv;
@@ -20,16 +20,16 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class PanelReportes extends BasePanel {
+public class PanelReporteMasVendido extends BasePanel {
 
     private DetalleVentaService dvs;
     private List<ProductoMasVendidoDto> listaReporte;
-    private ModeloTablaReportes modelo;
+    private ModeloTablaReportesProductoMasVendido modelo;
 
     private JTable tablaDetalle;
     private JButton btnMainPanel;
 
-    public PanelReportes(DetalleVentaService detalleVentaService, EventBus eventBus) {
+    public PanelReporteMasVendido(DetalleVentaService detalleVentaService, EventBus eventBus) {
         super(eventBus);
 
         this.dvs = detalleVentaService;
@@ -51,15 +51,14 @@ public class PanelReportes extends BasePanel {
         this.add(panelCentral, BorderLayout.CENTER);
 
         listaReporte = dvs.getProductosMasVendidos(null, null);
-        System.out.println(listaReporte);
         modelo.setProductos(listaReporte);
 
     }
 
     public void configurarTabla() {
-        modelo = new ModeloTablaReportes(listaReporte);
+        modelo = new ModeloTablaReportesProductoMasVendido(listaReporte);
         tablaDetalle = new JTable(modelo);
-        TableRowSorter<ModeloTablaReportes> sorter = new TableRowSorter<>(modelo);
+        TableRowSorter<ModeloTablaReportesProductoMasVendido> sorter = new TableRowSorter<>(modelo);
         tablaDetalle.setRowSorter(sorter);
 
     }

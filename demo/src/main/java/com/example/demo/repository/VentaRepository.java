@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.entity.DetalleVenta;
 import com.example.demo.entity.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,6 @@ public interface VentaRepository extends JpaRepository<Venta,Long> {
     List<Venta> findByProductoCodigo(@Param("codigo") long codigo);
     @Query("SELECT SUM(v.total) from Venta v WHERE v.fecha BETWEEN :inicio AND :fin")
     Double totalVentasEntreFechas(@Param("inicio") LocalDateTime inicio,@Param("fin") LocalDateTime fin);
+
+
 }

@@ -40,6 +40,7 @@ public class VentaService {
         return vr.findByFechaBetween(inicio, fin);
     }
 
+
     @Transactional
     public Venta create(VentaDto dto) {
 

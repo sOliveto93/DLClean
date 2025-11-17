@@ -6,11 +6,12 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModeloTablaReportes extends AbstractTableModel {
+public class ModeloTablaReportesProductoMasVendido extends AbstractTableModel {
 
     private final String[] columnas= {"Codigo", "Nombre", "Precio", "total"};
     private List<ProductoMasVendidoDto> lista;
-    public ModeloTablaReportes(List<ProductoMasVendidoDto> lista){
+
+    public ModeloTablaReportesProductoMasVendido(List<ProductoMasVendidoDto> lista){
         this.lista=lista;
     }
 

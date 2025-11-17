@@ -76,7 +76,6 @@ public class Venta {
                 "id=" + id +
                 ", fecha=" + fecha +
                 ", total=" + total +
-                ", detalles=" + detalles +
                 ", metodo de pago=" + metodoPago +
                 '}';
     }

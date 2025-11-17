@@ -27,5 +27,7 @@ public interface DetalleVentaRepository extends JpaRepository<DetalleVenta,Long>
             @Param("inicio") LocalDateTime inicio,
             @Param("fin") LocalDateTime fin
     );
+    @Query("SELECT d FROM DetalleVenta d WHERE d.venta.id = :ventaId")
+    List<DetalleVenta> findByVentaId(@Param("ventaId") Long ventaId);
 }
 
