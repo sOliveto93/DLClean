@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.GUI.Ventana;
+import com.example.demo.config.Config;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -21,10 +22,18 @@ public class DemoApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
+        Config config= Config.getInstance("config/config.properties");
+        String theme=config.getTheme();
         try {
-            UIManager.setLookAndFeel(new FlatDarkLaf());
+            switch (theme){
+                case "FlatDarkLaf":UIManager.setLookAndFeel(new FlatDarkLaf());break;
+                case "FlatDarculaLaf" : UIManager.setLookAndFeel(new FlatDarculaLaf()); break;
+                default : UIManager.setLookAndFeel(new FlatLightLaf());break;
+
+            }
+
         } catch (Exception ex) {
-            System.err.println("No se pudo aplicar FlatLaf");
+            System.err.println("No se pudo aplicar el theme "+ theme);
         }
         SpringApplication app = new SpringApplication(DemoApplication.class);
 

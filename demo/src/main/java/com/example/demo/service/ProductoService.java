@@ -42,6 +42,7 @@ public class ProductoService {
         p.setCodigo(dto.getCodigo());
         p.setPrecio(dto.getPrecio());
         p.setCategoria(dto.getCategoria());
+        p.setStock(dto.getStock());
         return pr.save(p);
     }
     public boolean deleteByCodigo(long codigo){
