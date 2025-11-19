@@ -30,7 +30,7 @@ public class VentaDto {
         private LocalDateTime fecha;
         private double total;
         private List<DetalleVenta> detalles;
-        @Enumerated(EnumType.STRING)
+
         private MetodoPago metodoPago;
 
         public Builder setFecha(LocalDateTime fecha) {

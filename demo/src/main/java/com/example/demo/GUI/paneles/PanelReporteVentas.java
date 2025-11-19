@@ -41,24 +41,35 @@ public class PanelReporteVentas extends BasePanel {
     }
 
 
-    @Override
+     @Override
     protected void inicializarComponentes() {
         this.setLayout(new BorderLayout());
 
+        // 1. Inicializar la lista de ventas
+        listaReporte = vs.getByFecha(LocalDate.now());
+        if (listaReporte == null) listaReporte = new ArrayList<>();
+
+        // 2. Inicializar la tabla y el modelo con la lista
         configurarTabla();
+
+        // 3. Paneles
         JPanel panelHeader = configurarPanelHeader();
-        JPanel panelFooter = configurarPanelFooter();
+        JPanel panelFooter = configurarPanelFooter(); // totalLabel ya inicializado
         JPanel panelCentral = new JPanel(new BorderLayout());
         panelCentral.add(new JScrollPane(tablaDetalle), BorderLayout.CENTER);
 
         this.add(panelHeader, BorderLayout.NORTH);
         this.add(panelCentral, BorderLayout.CENTER);
         this.add(panelFooter, BorderLayout.SOUTH);
-        listaReporte = vs.getByFecha(LocalDate.now());
-        recalcularTotal(listaReporte);
-        modelo.setProductos(listaReporte);
 
+        // 4. Setea los productos en el modelo y recalcula total
+        if (modelo != null) {
+            modelo.setProductos(listaReporte);
+        }
+        recalcularTotal(listaReporte);
     }
+
+
 
     public void configurarTabla() {
         modelo = new ModeloTablaReporteVenta(listaReporte);
@@ -119,15 +130,18 @@ public class PanelReporteVentas extends BasePanel {
         return panel;
     }
     public void recalcularTotal(List<Venta> lista){
-        total=0;
-        for(Venta v:lista){
-            total += v.getTotal();
+        total = 0;
+        if (lista != null) {
+            for(Venta v: lista){
+                if (v != null) total += v.getTotal();
+            }
         }
         setTotal(total);
-        totalLabel.setText(String.valueOf(getTotal()));
-
-
+        if(totalLabel != null){
+            totalLabel.setText(String.valueOf(getTotal()));
+        }
     }
+
 
     public void setTotal(double total) {
         this.total = total;

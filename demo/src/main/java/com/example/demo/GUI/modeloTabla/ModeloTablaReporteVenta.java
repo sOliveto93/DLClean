@@ -12,8 +12,9 @@ public class ModeloTablaReporteVenta extends AbstractTableModel {
     private List<Venta> lista;
 
     public ModeloTablaReporteVenta(List<Venta> lista){
-        this.lista=lista;
+        this.lista = lista != null ? lista : new ArrayList<>();
     }
+
 
     @Override
     public int getRowCount() {
@@ -30,16 +31,16 @@ public class ModeloTablaReporteVenta extends AbstractTableModel {
     }
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Venta v= lista.get(rowIndex);
+        Venta v = lista.get(rowIndex);
 
-        switch (columnIndex){
+        switch (columnIndex) {
             case 0: return v.getId();
-            case 1: return v.getMetodoPago();
+            case 1: return v.getMetodoPago().name(); // <-- ahora es String
             case 2: return v.getTotal();
-
             default: return null;
         }
     }
+
     public void setProductos(List<Venta> lista){
         this.lista = lista != null ? lista : new ArrayList<>();
 

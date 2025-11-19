@@ -126,28 +126,39 @@ public abstract class PlantillaPanelProductos extends BasePanel {
             }
         });
     }
-    protected  void crearVenta(ModeloTablaVentas modeloDetalle,JComboBox<MetodoPago> metodoPago){
+    protected void crearVenta(ModeloTablaVentas modeloDetalle, JComboBox<MetodoPago> metodoPago) {
 
-        double total=0;
-        List<DetalleVenta> detalleVentas=new ArrayList<>();
-        for(ItemVentaUI item:modeloDetalle.getProductos()){
-            total+=item.getSubtotal();
-            DetalleVenta detalleActual=new DetalleVenta();
-            detalleActual.setProducto(item.getProducto());
-            detalleActual.setCantidad(item.getCantidad());
-            detalleActual.setPrecioUnitario(item.getPrecioUnitario());
-            //la venta no la seteamos porque no existe aun
-            detalleVentas.add(detalleActual);
+        List<DetalleVenta> detalles = new ArrayList<>();
+        double total = 0;
+
+        for (ItemVentaUI item : modeloDetalle.getProductos()) {
+
+            DetalleVenta d = new DetalleVenta();
+            d.setProducto(item.getProducto());
+            d.setCantidad(item.getCantidad());
+            d.setPrecioUnitario(
+                    item.getPrecioUnitario() > 0 ?
+                            item.getPrecioUnitario() :
+                            item.getProducto().getPrecio()
+            );
+
+            detalles.add(d);
+            total += d.getCantidad() * d.getPrecioUnitario();
         }
-        //mapear esto a venta para persistirlo
-        VentaDto dto= VentaDto.builder()
-                .setDetalles(detalleVentas)
+
+        if (detalles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay productos en la venta");
+            return;
+        }
+
+        VentaDto ventaDto = VentaDto.builder()
                 .setFecha(LocalDateTime.now())
                 .setTotal(total)
                 .setMetodoPago((MetodoPago) metodoPago.getSelectedItem())
+                .setDetalles(detalles) // ← MUY IMPORTANTE
                 .build();
 
-        Venta nuevaVenta=ventaService.create(dto);// para tiket o algo
-
+        ventaService.create(ventaDto);
     }
+
 }

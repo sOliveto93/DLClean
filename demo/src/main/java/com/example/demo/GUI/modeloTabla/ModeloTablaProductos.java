@@ -11,7 +11,7 @@ public class ModeloTablaProductos extends AbstractTableModel {
     private final String[] columnas= {"Codigo", "Nombre", "Precio", "Stock"};
     private List<Producto> lista;
     public ModeloTablaProductos(List<Producto> lista){
-        this.lista=lista;
+        this.lista = lista != null ? lista : new ArrayList<>();
     }
 
     @Override
@@ -26,7 +26,10 @@ public class ModeloTablaProductos extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-       Producto p=lista.get(rowIndex);
+        if (lista == null || lista.isEmpty() || rowIndex < 0 || rowIndex >= lista.size()) {
+            return null;
+        }
+        Producto p=lista.get(rowIndex);
        switch (columnIndex){
            case 0: return p.getCodigo();
            case 1: return p.getNombre();

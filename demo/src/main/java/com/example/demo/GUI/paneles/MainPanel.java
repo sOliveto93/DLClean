@@ -3,15 +3,19 @@ package com.example.demo.GUI.paneles;
 import com.example.demo.GUI.base.BasePanel;
 import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.config.Config;
+import com.example.demo.entity.Producto;
 import com.example.demo.entity.Venta;
+import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,11 +24,11 @@ public class MainPanel extends BasePanel {
     Image backGround;
     Config config=Config.getInstance("config/config.properties");
     VentaService ventaService;
-
-    public MainPanel(EventBus eventBus,VentaService ventaService){
+    ProductoService ps;
+    public MainPanel(EventBus eventBus, VentaService ventaService, ProductoService ps){
         super(eventBus);
         this.ventaService=ventaService;
-
+    this.ps=ps;
 
         String rutaImagen = config.get("backgroundImage");
         try {
@@ -34,11 +38,14 @@ public class MainPanel extends BasePanel {
             System.err.println("No se pudo cargar la imagen de fondo: " + rutaImagen);
         }
 
-        inicializarComponentes();
+
 
     }
 
-
+    @PostConstruct
+    public void init() {
+        inicializarComponentes();
+    }
     @Override
     protected void inicializarComponentes() {
         this.setLayout(new BorderLayout());
@@ -56,7 +63,8 @@ public class MainPanel extends BasePanel {
 
 
         // Asociamos acciones
-        botonProductos.addActionListener((e)->eventBus.publish("panelProductos"));
+        botonProductos.addActionListener(
+                (e)->eventBus.publish("panelProductos"));
         botonCrudProducto.addActionListener((e)->eventBus.publish("panelCrudProductos"));
         botonVentaRapida.addActionListener(e->eventBus.publish("panelVentaRapida"));
         botonReporteMasVendido.addActionListener((e)->eventBus.publish("panelReporteMasVendido"));
@@ -79,6 +87,7 @@ public class MainPanel extends BasePanel {
     }
 
     public JPanel inicializarDashboard(List<Venta> ventas) {
+        if (ventas == null) ventas = new ArrayList<>();
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
 

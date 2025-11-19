@@ -26,6 +26,7 @@ public class DetalleVentaService {
         return dvr.productosMasVendidos(inicio, fin);
     }
     public List<DetalleVenta> getDetallesByIdVenta(Long id) {
-        return dvr.findByVentaId(id);
+        List<DetalleVenta> detalles = dvr.findByVentaId(id);
+        return detalles != null ? detalles : new ArrayList<>();
     }
 }

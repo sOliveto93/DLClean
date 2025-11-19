@@ -30,13 +30,15 @@ public class PanelDashboard extends JPanel {
         }
     }
     public void cargarMapa(List<Venta> ventas){
-        for(Venta v:ventas){
-            LocalDate fecha= LocalDate.from(v.getFecha());
-            double total=v.getTotal();
-            mapVentas.merge(fecha,total,(viejo,nuevo)->viejo+nuevo);
+        if (ventas == null) return; // nada que cargar
+        for(Venta v : ventas){
+            if (v == null || v.getFecha() == null) continue; // ignorar venta inválida
+            LocalDate fecha = LocalDate.from(v.getFecha());
+            double total = v.getTotal();
+            mapVentas.merge(fecha, total, Double::sum);
         }
-
     }
+
 
 
 

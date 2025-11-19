@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,8 @@ public class VentaService {
     public List<Venta> getByFecha(LocalDate fecha) {
         LocalDateTime inicio = fecha.atStartOfDay();
         LocalDateTime fin = fecha.atTime(LocalTime.MAX);
-        return vr.findByFechaBetween(inicio, fin);
+        List<Venta> ventas = vr.findByFechaBetween(inicio, fin);
+        return ventas != null ? ventas : new ArrayList<>();
     }
 
 
@@ -105,5 +107,8 @@ public class VentaService {
         //puede devolver null por eso usamos el wraper DOUBLE
         Double total = vr.totalVentasEntreFechas(start, end);
         return total != null ? total : 0.0;
+    }
+     public void save(Venta nuevaVenta){
+        vr.save(nuevaVenta);
     }
 }
