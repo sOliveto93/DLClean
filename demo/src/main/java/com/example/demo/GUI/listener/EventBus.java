@@ -1,14 +1,15 @@
 package com.example.demo.GUI.listener;
 
-import com.example.demo.utils.EventHandler;
+import com.example.demo.entity.Venta;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Component
 public class EventBus {
     private final Map<String, List<Runnable>> listeners=new HashMap<>();
-    private final Map<String, List<EventHandler<?>>> dataListeners = new HashMap<>();
+    private final Map<String, List<Consumer<Venta>>> ventaListeners = new HashMap<>();
 
     public void subscribe(String event, Runnable listener) {
 
@@ -26,20 +27,19 @@ public class EventBus {
             subs.forEach(runnable->runnable.run());
         }
     }
-    // ---- Eventos con parámetros (generic T) ----
-    public <T> void subscribe(String event, EventHandler<T> listener) {
-        dataListeners.computeIfAbsent(event, e -> new ArrayList<>()).add(listener);
+    // =============================
+    // Eventos tipados: Venta
+    // =============================
+    public void subscribe(String event, Consumer<Venta> handler) {
+        ventaListeners.computeIfAbsent(event, e -> new ArrayList<>()).add(handler);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> void publish(String event, T data) {
-        List<EventHandler<?>> subs = dataListeners.get(event);
-
+    public void publish(String event, Venta data) {
+        List<Consumer<Venta>> subs = ventaListeners.get(event);
         if (subs != null) {
-            for (EventHandler<?> listener : subs) {
-                ((EventHandler<T>) listener).onEvent(data);
-            }
+            subs.forEach(h -> h.accept(data));
         }
     }
+
 
 }

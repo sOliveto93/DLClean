@@ -63,18 +63,20 @@ public class PanelDashboard extends BasePanel {
         setLayout(new GridLayout(7, 5, 3, 3)); // 35 celdas
     }
     public void suscribirEventos(){
-        eventBus.subscribe("ventaCreada",( data)->{
-            Venta nuevaVenta=(Venta) data;
-            agregarVenta(nuevaVenta);
+        eventBus.subscribe("ventaCreada",(data)->{
+
+            agregarVenta(data);
         });
     }
     private void agregarVenta(Venta venta) {
-        mapVentas.clear();
         if (venta == null || venta.getFecha() == null) return;
+
         ventas.add(venta);
-        cargarMapa(ventas);
+        mapVentas.clear();  // limpio antes de recalcular todo
         refrescarUI();
     }
+
+
     private void refrescarUI() {
         this.removeAll();
 

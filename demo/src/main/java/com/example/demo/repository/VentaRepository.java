@@ -18,6 +18,7 @@ public interface VentaRepository extends JpaRepository<Venta,Long> {
     List<Venta> findByProductoCodigo(@Param("codigo") long codigo);
     @Query("SELECT SUM(v.total) from Venta v WHERE v.fecha BETWEEN :inicio AND :fin")
     Double totalVentasEntreFechas(@Param("inicio") LocalDateTime inicio,@Param("fin") LocalDateTime fin);
-
+    @Query("SELECT v from Venta v WHERE v.fecha BETWEEN :inicio AND :fin")
+    List<Venta> ventasEntreFechas(@Param("inicio") LocalDateTime inicio,@Param("fin") LocalDateTime fin);
 
 }

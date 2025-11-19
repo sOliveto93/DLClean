@@ -81,7 +81,7 @@ public class MainPanel extends BasePanel {
         panelBotones.add(botonReporteVentas);
 
         this.add(panelBotones, BorderLayout.NORTH);
-        JPanel panelDashBoard = inicializarDashboard(ventaService.getAll());
+        JPanel panelDashBoard = inicializarDashboard(ventaService.getVentaSUltimos30Dias());
         this.add(panelDashBoard,BorderLayout.CENTER);
 
     }

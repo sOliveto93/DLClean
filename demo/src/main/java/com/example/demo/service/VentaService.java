@@ -111,4 +111,13 @@ public class VentaService {
      public void save(Venta nuevaVenta){
         vr.save(nuevaVenta);
     }
+
+    public List<Venta> getVentaSUltimos30Dias() {
+
+        LocalDateTime end = LocalDateTime.now();
+        LocalDateTime start = end.minusDays(30);
+        //puede devolver null por eso usamos el wraper DOUBLE
+         List<Venta> lista=vr.ventasEntreFechas(start, end);
+        return lista != null ? lista:new ArrayList<>();
+    }
 }
