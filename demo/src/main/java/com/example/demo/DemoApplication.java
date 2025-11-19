@@ -24,6 +24,7 @@ public class DemoApplication implements CommandLineRunner {
     public static void main(String[] args) {
         Config config= Config.getInstance("config/config.properties");
         String theme=config.getTheme();
+        String dbPath=config.get("sqlite.url");
         try {
             switch (theme){
                 case "FlatDarkLaf":UIManager.setLookAndFeel(new FlatDarkLaf());break;
@@ -35,6 +36,7 @@ public class DemoApplication implements CommandLineRunner {
         } catch (Exception ex) {
             System.err.println("No se pudo aplicar el theme "+ theme);
         }
+        System.setProperty("DB_PATH", "jdbc:sqlite:" + dbPath);
         SpringApplication app = new SpringApplication(DemoApplication.class);
 
         app.setHeadless(false);
