@@ -126,7 +126,7 @@ public abstract class PlantillaPanelProductos extends BasePanel {
             }
         });
     }
-    protected void crearVenta(ModeloTablaVentas modeloDetalle, JComboBox<MetodoPago> metodoPago) {
+    protected Venta crearVenta(ModeloTablaVentas modeloDetalle, JComboBox<MetodoPago> metodoPago) {
 
         List<DetalleVenta> detalles = new ArrayList<>();
         double total = 0;
@@ -148,7 +148,7 @@ public abstract class PlantillaPanelProductos extends BasePanel {
 
         if (detalles.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No hay productos en la venta");
-            return;
+            return null;
         }
 
         VentaDto ventaDto = VentaDto.builder()
@@ -158,7 +158,8 @@ public abstract class PlantillaPanelProductos extends BasePanel {
                 .setDetalles(detalles) // ← MUY IMPORTANTE
                 .build();
 
-        ventaService.create(ventaDto);
+        return ventaService.create(ventaDto);
+
     }
 
 }

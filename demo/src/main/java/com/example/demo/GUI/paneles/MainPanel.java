@@ -103,7 +103,7 @@ public class MainPanel extends BasePanel {
         // Anclar a abajo-derecha
         gbc.anchor = GridBagConstraints.SOUTHEAST;
 
-        panel.add(new PanelDashboard(ventas), gbc);
+        panel.add(new PanelDashboard(ventas,eventBus), gbc);
 
         return panel;
     }

@@ -6,6 +6,7 @@ import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.GUI.modeloTabla.ItemVentaUI;
 import com.example.demo.GUI.modeloTabla.ModeloTablaVentas;
 import com.example.demo.entity.Producto;
+import com.example.demo.entity.Venta;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 @Component
 public class PanelVentaRapida extends PlantillaPanelProductos {
@@ -104,7 +106,22 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         });
     }
     public void confirmarVenta(){
-        super.crearVenta(modeloDetalle,comboBoxmetodoPago);
+        Venta ventaCreada=super.crearVenta(modeloDetalle,comboBoxmetodoPago);
+        if (ventaCreada == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al registrar la venta.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        else{
+            JOptionPane.showMessageDialog(this,
+                    "Venta Creada con exito",
+                    "Confirmacion de Venta",
+                    JOptionPane.INFORMATION_MESSAGE);
+            modeloDetalle.clear();
+            eventBus.publish("ventaCreada",ventaCreada);
+        }
         cargarProductos(null);
+
     }
 }

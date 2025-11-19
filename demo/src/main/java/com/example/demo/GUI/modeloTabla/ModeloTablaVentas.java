@@ -76,4 +76,8 @@ public class ModeloTablaVentas extends AbstractTableModel {
         }
 
     }
+    public void clear() {
+        this.lista.clear();
+        fireTableDataChanged();
+    }
 }
