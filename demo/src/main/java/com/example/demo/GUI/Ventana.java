@@ -3,12 +3,16 @@ package com.example.demo.GUI;
 
 import com.example.demo.GUI.base.BasePanel;
 import com.example.demo.GUI.listener.EventBus;
+import com.example.demo.entity.Producto;
+import com.example.demo.repository.ProductoRepository;
+import com.example.demo.utils.CsvLoader;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -19,7 +23,6 @@ public class Ventana  extends JFrame  {
     private BasePanel panelActual;
 
     public Ventana(EventBus eventBus,Map<String,BasePanel> paneles){
-
         this.eventBus=eventBus;
 
         this.paneles=paneles;

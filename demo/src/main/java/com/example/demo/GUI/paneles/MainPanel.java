@@ -7,6 +7,7 @@ import com.example.demo.entity.Producto;
 import com.example.demo.entity.Venta;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
+import com.example.demo.utils.CsvLoader;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,32 +50,28 @@ public class MainPanel extends BasePanel {
     }
     @Override
     protected void inicializarComponentes() {
+
         this.setLayout(new BorderLayout());
         JLabel titulo = new JLabel("Bienvenido a DLClean", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        titulo.setForeground(Color.WHITE); // que contraste con el fondo oscuro
+        titulo.setForeground(Color.WHITE);
         this.add(titulo, BorderLayout.NORTH);
 
         // Creamos botones
-        botonCrudProducto = crearBoton("CRUD PRODUCTOS", new Color(100, 181, 246)); // azul pastel
-        botonProductos = crearBoton("Inventario", new Color(129, 199, 132));       // verde pastel
-        botonVentaRapida = crearBoton("Venta Rápida", new Color(255, 224, 130));  // amarillo pastel
-        botonReporteMasVendido = crearBoton("Reportes Mas Vendidos", new Color(239, 154, 154)); // rojo pastel
-        botonReporteVentas = crearBoton("Reporte Ventas", new Color(186, 104, 200)); // morado pastel
+        botonCrudProducto = crearBoton("CRUD PRODUCTOS", new Color(100, 181, 246));
+        botonProductos = crearBoton("Inventario", new Color(129, 199, 132));
+        botonVentaRapida = crearBoton("Venta Rápida", new Color(255, 224, 130));
+        botonReporteMasVendido = crearBoton("Reportes Mas Vendidos", new Color(239, 154, 154));
+        botonReporteVentas = crearBoton("Reporte Ventas", new Color(186, 104, 200));
 
+        botonProductos.addActionListener(e -> eventBus.publish("panelProductos"));
+        botonCrudProducto.addActionListener(e -> eventBus.publish("panelCrudProductos"));
+        botonVentaRapida.addActionListener(e -> eventBus.publish("panelVentaRapida"));
+        botonReporteMasVendido.addActionListener(e -> eventBus.publish("panelReporteMasVendido"));
+        botonReporteVentas.addActionListener(e -> eventBus.publish("panelReporteVentas"));
 
-        // Asociamos acciones
-        botonProductos.addActionListener(
-                (e)->eventBus.publish("panelProductos"));
-        botonCrudProducto.addActionListener((e)->eventBus.publish("panelCrudProductos"));
-        botonVentaRapida.addActionListener(e->eventBus.publish("panelVentaRapida"));
-        botonReporteMasVendido.addActionListener((e)->eventBus.publish("panelReporteMasVendido"));
-        botonReporteVentas.addActionListener((e)->eventBus.publish("panelReporteVentas"));
-
-        // Panel contenedor transparente
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
         panelBotones.setOpaque(false);
-
         panelBotones.add(botonProductos);
         panelBotones.add(botonCrudProducto);
         panelBotones.add(botonVentaRapida);
@@ -81,11 +79,40 @@ public class MainPanel extends BasePanel {
         panelBotones.add(botonReporteVentas);
 
         this.add(panelBotones, BorderLayout.NORTH);
-        JPanel panelDashBoard = inicializarDashboard(ventaService.getVentaSUltimos30Dias());
-        this.add(panelDashBoard,BorderLayout.CENTER);
 
+        // Panel contenedor para dashboard y reporte diario
+        JPanel panelCentral = new JPanel(new GridBagLayout());
+        panelCentral.setOpaque(false);
+
+        //grid para los paneles de abajo
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // margen entre componentes
+
+        JPanel panelTotalDiario=inicializarPanelTotalDiario(ventaService.getByFecha(LocalDate.now()),gbc);
+        panelCentral.add(panelTotalDiario,gbc);
+        // PanelDashboard en la derecha
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1; // ocupa todo el espacio disponible
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        JPanel panelDashboard = inicializarDashboard(ventaService.getVentaSUltimos30Dias());
+        panelCentral.add(panelDashboard, gbc);
+
+        this.add(panelCentral, BorderLayout.CENTER);
     }
 
+    public JPanel inicializarPanelTotalDiario(List<Venta> ventas,GridBagConstraints gbc){
+        // PanelReporteVentaDiarioActual en la izquierda
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0; // ocupa espacio justo
+        gbc.weighty = 1;
+        gbc.anchor = GridBagConstraints.SOUTHWEST;
+        PanelReporteVentaDiarioActual panelReporteVentaDiarioActual = new PanelReporteVentaDiarioActual(eventBus,ventas);
+        return panelReporteVentaDiarioActual;
+    }
     public JPanel inicializarDashboard(List<Venta> ventas) {
         if (ventas == null) ventas = new ArrayList<>();
         JPanel panel = new JPanel(new GridBagLayout());

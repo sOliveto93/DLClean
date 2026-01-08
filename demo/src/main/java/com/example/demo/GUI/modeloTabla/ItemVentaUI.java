@@ -9,10 +9,16 @@ public class ItemVentaUI {
     public ItemVentaUI(Producto producto,int cantidad){
         this.producto=producto;
         this.cantidad=cantidad;
-        this.precioUnitario = producto.getPrecio();//valor por defecto
+        this.precioUnitario = producto != null ? producto.getPrecioVenta():0;//valor por defecto
     }
 
     public Producto getProducto() { return producto; }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
+
+
     public int getCantidad() { return cantidad; }
     public void setCantidad(int cantidad) { this.cantidad = cantidad; }
     public double getPrecioUnitario() { return precioUnitario; }
@@ -20,6 +26,9 @@ public class ItemVentaUI {
 
     public double getSubtotal() {
         return precioUnitario * cantidad;
+    }
+    public boolean isVacio() {
+        return producto == null;
     }
 
     @Override

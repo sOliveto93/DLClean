@@ -17,7 +17,7 @@ public class ExportarCsv {
                 pw.println(
                         p.getProducto().getCodigo() + "," +
                                 p.getProducto().getNombre() + "," +
-                                p.getProducto().getPrecio() + "," +
+                                p.getProducto().getPrecioVenta() + "," +
                                 (p.getTotalFacturado())
                 );
             }

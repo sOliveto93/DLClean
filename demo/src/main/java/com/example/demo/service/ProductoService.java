@@ -33,6 +33,9 @@ public class ProductoService {
     public Optional<List<Producto>> getByCategoria(String categoria){
         return pr.findByCategoria(categoria);
     }
+    public Optional<Producto> getByCodigoBarra(String codigoBarra){
+        return pr.findByCodigoBarra(codigoBarra);
+    }
     public Producto create(ProductoDto dto) {
         if (pr.findByCodigo(dto.getCodigo()).isPresent()) {
             throw new ProductoDuplicadoException("Ya existe un producto con el código " + dto.getCodigo());
@@ -40,7 +43,7 @@ public class ProductoService {
         Producto p=new Producto();
         p.setNombre(dto.getNombre());
         p.setCodigo(dto.getCodigo());
-        p.setPrecio(dto.getPrecio());
+        p.setPrecioVenta(dto.getPrecio());
         p.setCategoria(dto.getCategoria());
         p.setStock(dto.getStock());
         return pr.save(p);
@@ -53,18 +56,32 @@ public class ProductoService {
         }
         return false;
     }
+    public boolean updateCodigoBarra(String codigoBarra,long codigo){
+        Optional<Producto>opViejo=getByCodigo(codigo);
+        if(opViejo.isPresent()){
+            Producto nuevo=opViejo.get();
+            nuevo.setCodigoBarra(codigoBarra);
+            pr.save(nuevo);
+            return true;
+        }
+        return false;
+    }
     public boolean updateProducto(Producto nuevoProducto){
         Optional<Producto>opViejo=getByCodigo(nuevoProducto.getCodigo());
         if(opViejo.isPresent()){
            Producto pModificado=opViejo.get();
            pModificado.setNombre(nuevoProducto.getNombre());
            pModificado.setCategoria(nuevoProducto.getCategoria());
-           pModificado.setPrecio(nuevoProducto.getPrecio());
+           pModificado.setPrecioVenta(nuevoProducto.getPrecioVenta());
            pModificado.setStock(nuevoProducto.getStock());
 
            pr.save(pModificado);
            return true;
         }
         return false;
+    }
+
+    public void crear(Producto producto) {
+        pr.save(producto);
     }
 }

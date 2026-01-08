@@ -36,7 +36,7 @@ public class ModeloTablaReportesProductoMasVendido extends AbstractTableModel {
         switch (columnIndex){
             case 0: return p.getProducto().getCodigo();
             case 1: return p.getProducto().getNombre();
-            case 2: return p.getProducto().getPrecio();
+            case 2: return p.getProducto().getPrecioVenta();
             case 3: return p.getTotalFacturado();
             default: return null;
         }

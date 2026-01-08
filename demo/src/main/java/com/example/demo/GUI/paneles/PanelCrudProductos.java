@@ -81,7 +81,7 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         labelProductoCodigo.setText(String.valueOf(producto.getCodigo()));
         labelProductoNombre.setText(producto.getNombre());
         labelProductoCategoria.setText(producto.getCategoria().toString());
-        labelProductoPrecio.setText(String.valueOf(producto.getPrecio()));
+        labelProductoPrecio.setText(String.valueOf(producto.getPrecioVenta()));
         labelProductoStock.setText(String.valueOf(producto.getStock()));
         //para usarlo internamente luego
         setProductoSeleccionado(producto);
@@ -191,7 +191,7 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
             if (isNumero(nuevoPrecio)) {
                 double valor=Double.parseDouble(nuevoPrecio);
                 if(valor >= 0){
-                    productoTemporal.setPrecio(valor);
+                    productoTemporal.setPrecioVenta(valor);
                     seModifico = true;
                 }
                 else {

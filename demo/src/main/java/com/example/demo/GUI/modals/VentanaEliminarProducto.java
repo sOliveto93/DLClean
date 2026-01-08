@@ -1,6 +1,5 @@
 package com.example.demo.GUI.modals;
 
-import com.example.demo.Enum.Categoria;
 import com.example.demo.entity.Producto;
 
 import javax.swing.*;
@@ -26,7 +25,7 @@ public class VentanaEliminarProducto extends JDialog {
         panelCampos.add(new JLabel("Codigo: "+ producto.getCodigo()));
         panelCampos.add(new JLabel("Nombre: "+producto.getNombre()));
         panelCampos.add(new JLabel("Categoría: "+producto.getCategoria().toString()));
-        panelCampos.add(new JLabel("Precio: "+producto.getPrecio()));
+        panelCampos.add(new JLabel("Precio: "+producto.getPrecioVenta()));
         panelCampos.add(new JLabel("Stock: "+ producto.getStock()));
 
         btnConfirmar = new JButton("Confirmar");

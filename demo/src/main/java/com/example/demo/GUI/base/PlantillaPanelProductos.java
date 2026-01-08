@@ -132,18 +132,19 @@ public abstract class PlantillaPanelProductos extends BasePanel {
         double total = 0;
 
         for (ItemVentaUI item : modeloDetalle.getProductos()) {
+            if(item.getProducto()!=null) {
+                DetalleVenta d = new DetalleVenta();
+                d.setProducto(item.getProducto());
+                d.setCantidad(item.getCantidad());
+                d.setPrecioUnitario(
+                        item.getPrecioUnitario() > 0 ?
+                                item.getPrecioUnitario() :
+                                item.getProducto().getPrecioVenta()
+                );
 
-            DetalleVenta d = new DetalleVenta();
-            d.setProducto(item.getProducto());
-            d.setCantidad(item.getCantidad());
-            d.setPrecioUnitario(
-                    item.getPrecioUnitario() > 0 ?
-                            item.getPrecioUnitario() :
-                            item.getProducto().getPrecio()
-            );
-
-            detalles.add(d);
-            total += d.getCantidad() * d.getPrecioUnitario();
+                detalles.add(d);
+                total += d.getCantidad() * d.getPrecioUnitario();
+            }
         }
 
         if (detalles.isEmpty()) {
