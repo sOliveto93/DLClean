@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -191,6 +192,23 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         btnLimpiarCompra.addActionListener(e->{
             modeloDetalle.clear();
         });
+
+        tablaDetalle.getInputMap(JComponent.WHEN_FOCUSED)
+                .put(KeyStroke.getKeyStroke("DELETE"), "deleteRow");
+
+        tablaDetalle.getActionMap().put("deleteRow", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = tablaDetalle.getSelectedRow();
+                if (row == -1) return;
+
+                int modelRow = tablaDetalle.convertRowIndexToModel(row);
+                ItemVentaUI item = modeloDetalle.getProductoAt(modelRow);
+
+                modeloDetalle.removeItem(item);
+            }
+        });
+
         modeloDetalle.addTableModelListener(e -> actualizarTotal());
 
     }

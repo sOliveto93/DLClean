@@ -158,17 +158,34 @@ public class ModeloTablaVentas extends AbstractTableModel {
         return lista.get(rowIndex);
     }
 
-    /** Borra un item de la lista y refresca la tabla */
-    public void removeRow(int row) {
-        if (row >= 0 && row < lista.size()) {
-            lista.remove(row);
-            fireTableRowsDeleted(row, row);
-        }
-    }
 
     public void clear() {
         lista.clear();
         agregarFilaVacia();
         fireTableDataChanged();
     }
+    public void removeItem(ItemVentaUI item) {
+        if (item == null) return;
+
+        // no borrar fila vacía
+        if (item.isVacio()) return;
+
+        lista.remove(item);
+
+        // asegurar fila vacía al final
+        boolean hayFilaVacia = false;
+        for (ItemVentaUI it : lista) {
+            if (it.isVacio()) {
+                hayFilaVacia = true;
+                break;
+            }
+        }
+
+        if (!hayFilaVacia) {
+            agregarFilaVacia();
+        }
+
+        fireTableDataChanged();
+    }
+
 }
