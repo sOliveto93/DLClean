@@ -61,6 +61,7 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         configurarSidePanels();
         panelHeader.add(btnMainPanel, BorderLayout.WEST);
         panelHeader.add(titulo, BorderLayout.CENTER);
+        panelHeader.add(super.crearPanelBusqueda(), BorderLayout.SOUTH);
         this.add(panelHeader,BorderLayout.NORTH);
         cargarProductos(null);
         agregarListenerSeleccionParaLista();
@@ -68,10 +69,9 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
     private void configurarSidePanels() {
 
-        JPanel panelDeBusqueda=configurarPanelBusqueda();
+
         JPanel panelDeEdicion = configurarPanelEdicion();
 
-        this.add(panelDeBusqueda, BorderLayout.WEST);
         this.add(panelDeEdicion, BorderLayout.EAST);
     }
 
@@ -143,23 +143,7 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         configurarEventos();
         return panelDeEdicion;
     }
-    public JPanel configurarPanelBusqueda(){
-        JPanel panelDeBusqueda = new JPanel();
-        panelDeBusqueda.setLayout(new BorderLayout());
-        panelDeBusqueda.setBackground(Color.BLACK);
-         btnListar = new JButton("Listar todos");
 
-
-        panelDeBusqueda.add(btnListar, BorderLayout.BEFORE_FIRST_LINE);
-
-        busqueda = new JTextField();
-        panelDeBusqueda.add(busqueda, BorderLayout.CENTER);
-
-        btnBuscar = new JButton("Buscar");
-        panelDeBusqueda.add(btnBuscar, BorderLayout.SOUTH);
-
-        return panelDeBusqueda;
-    }
     public void setProductoSeleccionado(Producto producto) {
         this.productoSeleccionado = producto;
     }
@@ -257,8 +241,6 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
             }
         });
         btnMainPanel.addActionListener((e)->eventBus.publish("mainPanel"));
-        btnListar.addActionListener(e -> cargarProductos(null));
-        btnBuscar.addActionListener(e -> cargarProductos(busqueda.getText()));
         btnCrearProducto.addActionListener(e->crearProducto());
         btnEliminarProducto.addActionListener(e->eliminarProducto(labelProductoCodigo.getText()));
     }

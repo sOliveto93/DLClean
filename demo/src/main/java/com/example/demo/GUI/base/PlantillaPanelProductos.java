@@ -173,5 +173,29 @@ public abstract class PlantillaPanelProductos extends BasePanel {
         return ventaService.create(ventaDto);
 
     }
+    protected JPanel crearPanelBusqueda() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        JTextField txtBuscar = new JTextField(15);
+        JButton btnListar = new JButton("Listar");
+
+        btnListar.addActionListener(e -> {
+            String texto = txtBuscar.getText().trim();
+            if (texto.isEmpty()) {
+                cargarProductos(null);
+            } else {
+                cargarProductos(texto);
+            }
+        });
+        txtBuscar.addActionListener(e -> btnListar.doClick());
+
+
+        panel.add(new JLabel("Buscar:"));
+        panel.add(txtBuscar);
+
+        panel.add(btnListar);
+
+        return panel;
+    }
 
 }

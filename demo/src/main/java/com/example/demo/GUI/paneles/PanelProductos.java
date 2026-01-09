@@ -30,32 +30,14 @@ public class PanelProductos extends PlantillaPanelProductos {
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
         panelHeader.add(titulo, BorderLayout.CENTER);
         panelHeader.add(btnMainPanel, BorderLayout.WEST);
+        panelHeader.add(super.crearPanelBusqueda(), BorderLayout.SOUTH);
         this.add(panelHeader, BorderLayout.NORTH);
         super.configurarTabla();
-        configurarSidePanels();
+
         agregarListenerSeleccionParaLista();
 
     }
 
-
-    private void configurarSidePanels() {
-        JPanel panelDeBusqueda = new JPanel(new BorderLayout());
-        panelDeBusqueda.setBackground(Color.BLACK);
-
-        JButton btnListar = new JButton("Listar todos");
-        btnListar.addActionListener(e -> cargarProductos(null));
-        panelDeBusqueda.add(btnListar, BorderLayout.NORTH);
-
-        JTextField busqueda = new JTextField();
-        panelDeBusqueda.add(busqueda, BorderLayout.CENTER);
-        busqueda.addActionListener(e -> cargarProductos(busqueda.getText()));
-
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.addActionListener(e -> cargarProductos(busqueda.getText()));
-        panelDeBusqueda.add(btnBuscar, BorderLayout.SOUTH);
-
-        this.add(panelDeBusqueda, BorderLayout.WEST);
-    }
 
     @Override
     protected void onProductoSeleccionado(Producto producto) {

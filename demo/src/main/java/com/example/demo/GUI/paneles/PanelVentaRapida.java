@@ -26,13 +26,14 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
     private JButton btnMainPanel;
     private JButton btnConfirmarCompra;
     private JButton btnLimpiarCompra;
-    private JComboBox<MetodoPago>comboBoxmetodoPago;
+    private JComboBox<MetodoPago> comboBoxmetodoPago;
     private JLabel lblTotal;
 
     ProductoService productoService;
-    public PanelVentaRapida(ProductoService productoService, VentaService ventaService, EventBus eventBus){
-        super(productoService,ventaService,eventBus);
-        this.productoService=productoService;
+
+    public PanelVentaRapida(ProductoService productoService, VentaService ventaService, EventBus eventBus) {
+        super(productoService, ventaService, eventBus);
+        this.productoService = productoService;
         inicializarComponentes();
 
     }
@@ -41,18 +42,21 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
     protected void inicializarComponentes() {
         this.setLayout(new BorderLayout());
         agregarPanelPlantilla(BorderLayout.WEST);
-        JPanel panelHeader=new JPanel(new BorderLayout());
-        JPanel panelDetalleVenta=configurarPanelDetalleVenta();
+        JPanel panelHeader = new JPanel(new BorderLayout());
+        JPanel panelDetalleVenta = configurarPanelDetalleVenta();
         JLabel titulo = new JLabel("VENTA PANEL", SwingConstants.CENTER);
         titulo.setFont(new Font("SansSerif", Font.BOLD, 20));
-        btnMainPanel=new JButton("Inicio");
-        btnMainPanel.addActionListener(e->eventBus.publish("mainPanel"));
+        btnMainPanel = new JButton("Inicio");
+        btnMainPanel.addActionListener(e -> eventBus.publish("mainPanel"));
+        //aca agregamos el panel productos de la plantilla
         super.configurarTabla();
 
         panelHeader.add(btnMainPanel, BorderLayout.WEST);
         panelHeader.add(titulo, BorderLayout.CENTER);
-        this.add(panelHeader,BorderLayout.NORTH);
-        this.add(panelDetalleVenta,BorderLayout.CENTER);
+        panelHeader.add(super.crearPanelBusqueda(), BorderLayout.SOUTH);
+
+        this.add(panelHeader, BorderLayout.NORTH);
+        this.add(panelDetalleVenta, BorderLayout.CENTER);
 
 
         cargarProductos(null);
@@ -63,10 +67,10 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
 
     @Override
     protected void onProductoSeleccionado(Producto producto) {
-        if(producto == null) return;
+        if (producto == null) return;
 
         for (ItemVentaUI item : modeloDetalle.getProductos()) {
-            if(item.getProducto() != null && item.getProducto().getCodigo() == producto.getCodigo()){
+            if (item.getProducto() != null && item.getProducto().getCodigo() == producto.getCodigo()) {
                 item.setCantidad(item.getCantidad() + 1); // suma 1
                 modeloDetalle.fireTableDataChanged();
                 return;
@@ -87,6 +91,7 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         }
         //modeloDetalle.addProducto(new ItemVentaUI(producto, 1));
     }
+
     public JPanel configurarPanelDetalleVenta() {
         JPanel panel = new JPanel(new BorderLayout());
 
@@ -135,8 +140,6 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
                 });
 
 
-
-
         panel.add(new JScrollPane(tablaDetalle), BorderLayout.CENTER);
 
         // Panel inferior para combo y botones
@@ -158,7 +161,6 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         panelInferior.add(panelTotal, BorderLayout.SOUTH);
 
 
-
         // Botones Confirmar y Borrar centrados
         btnConfirmarCompra = new JButton("Confirmar");
         btnLimpiarCompra = new JButton("Borrar");
@@ -171,13 +173,13 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         return panel;
     }
 
-    public void agregarListenerDobleClick(){
+    public void agregarListenerDobleClick() {
         tabla.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     int fila = tabla.getSelectedRow();
-                    if(fila != -1){
+                    if (fila != -1) {
                         Producto producto = modeloTabla.getProductoAt(tabla.convertRowIndexToModel(fila));
                         onProductoSeleccionado(producto);
                     }
@@ -185,11 +187,12 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
             }
         });
     }
-    public void configurarEventos(){
-        btnConfirmarCompra.addActionListener(e->{
+
+    public void configurarEventos() {
+        btnConfirmarCompra.addActionListener(e -> {
             confirmarVenta();
         });
-        btnLimpiarCompra.addActionListener(e->{
+        btnLimpiarCompra.addActionListener(e -> {
             modeloDetalle.clear();
         });
 
@@ -225,24 +228,25 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         lblTotal.setText(String.format("Total: $ %.2f", total));
     }
 
-    public void confirmarVenta(){
-        Venta ventaCreada=super.crearVenta(modeloDetalle,comboBoxmetodoPago);
+    public void confirmarVenta() {
+        Venta ventaCreada = super.crearVenta(modeloDetalle, comboBoxmetodoPago);
         if (ventaCreada == null) {
             JOptionPane.showMessageDialog(this,
                     "Error al registrar la venta.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-        }
-        else{
+        } else {
             JOptionPane.showMessageDialog(this,
                     "Venta Creada con exito",
                     "Confirmacion de Venta",
                     JOptionPane.INFORMATION_MESSAGE);
             modeloDetalle.clear();
-            eventBus.publish("ventaCreada",ventaCreada);
+            eventBus.publish("ventaCreada", ventaCreada);
         }
         cargarProductos(null);
 
     }
+
+
 
 }
