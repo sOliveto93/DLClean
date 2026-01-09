@@ -165,9 +165,10 @@ public class PanelReporteVentas extends BasePanel {
         });
     }
     public void onVentaSeleccionado(Venta venta){
+        //detalles es lazy dentro de venta.. forzamos a traer los detalles
         List<DetalleVenta> detalles = dvr.getDetallesByIdVenta(venta.getId());
         JFrame ventanaPadre=(JFrame) SwingUtilities.getWindowAncestor(this);
-        new VentanaDetalleVenta(ventanaPadre, venta, detalles);
+        new VentanaDetalleVenta(ventanaPadre, venta, detalles );
     }
 
 }

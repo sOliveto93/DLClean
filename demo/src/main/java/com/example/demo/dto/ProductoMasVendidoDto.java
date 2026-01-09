@@ -24,7 +24,7 @@ public class ProductoMasVendidoDto {
         this.producto = producto;
     }
 
-    public double getCantidadVendida() {
+    public long getCantidadVendida() {
         return cantidadVendida;
     }
 

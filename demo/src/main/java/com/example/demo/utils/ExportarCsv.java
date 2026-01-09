@@ -11,14 +11,14 @@ public class ExportarCsv {
 
     public static void exportar(List<ProductoMasVendidoDto> lista, File archivo) {
         try (PrintWriter pw = new PrintWriter(archivo)) {
-            pw.println("Codigo,nombre,Precio,Total");
+            pw.println("Codigo;nombre;cantidad;Total");
 
             for (ProductoMasVendidoDto p : lista) {
                 pw.println(
-                        p.getProducto().getCodigo() + "," +
-                                p.getProducto().getNombre() + "," +
-                                p.getProducto().getPrecioVenta() + "," +
-                                (p.getTotalFacturado())
+                        p.getProducto().getCodigo() + ";" +
+                                p.getProducto().getNombre() + ";" +
+                                p.getCantidadVendida() + ";" +
+                                p.getTotalFacturado()
                 );
             }
             JOptionPane.showMessageDialog(null, "CSV exportado correctamente");

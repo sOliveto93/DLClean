@@ -3,19 +3,26 @@ package com.example.demo.GUI.paneles;
 import com.example.demo.GUI.base.BasePanel;
 import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.entity.Venta;
+import com.example.demo.utils.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PanelReporteVentaDiarioActual extends BasePanel {
 
     private double total;
     private JLabel totalLabel;
-
+    private ImageLoader imageLoader;
+    private BufferedImage img;
     public PanelReporteVentaDiarioActual(EventBus eventBus, List<Venta> ventas){
         super(eventBus);
+        imageLoader=ImageLoader.getInstance();
+        Optional<BufferedImage>op=imageLoader.getImage("dineroPNG");
+        op.ifPresent(img->this.img=img);
 
         if (ventas == null) ventas = new ArrayList<>();
         total = 0;
@@ -32,7 +39,7 @@ public class PanelReporteVentaDiarioActual extends BasePanel {
         this.setBorder(BorderFactory.createLineBorder(new Color(0, 128, 0), 2));
 
         // Símbolo de dólar
-        JLabel simboloLabel = new JLabel("$");
+        JLabel simboloLabel = new JLabel(new ImageIcon(img.getScaledInstance(64,64,Image.SCALE_SMOOTH)));
         simboloLabel.setFont(new Font("SansSerif", Font.BOLD, 48));
         simboloLabel.setForeground(Color.WHITE);
 

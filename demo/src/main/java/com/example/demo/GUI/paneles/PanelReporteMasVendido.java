@@ -50,7 +50,8 @@ public class PanelReporteMasVendido extends BasePanel {
         this.add(panelHeader, BorderLayout.NORTH);
         this.add(panelCentral, BorderLayout.CENTER);
 
-        listaReporte = dvs.getProductosMasVendidos(null, null);
+        //listaReporte = dvs.getProductosMasVendidos(null, null);
+        listaReporte=new ArrayList<>();
         modelo.setProductos(listaReporte);
 
     }
@@ -94,8 +95,9 @@ public class PanelReporteMasVendido extends BasePanel {
                 LocalDateTime inicioDT = inicio != null ? inicio.atStartOfDay() : null;
                 LocalDateTime finDT = fin != null ? fin.atTime(23, 59, 59) : null;
 
-                List<ProductoMasVendidoDto> filtrados = dvs.getProductosMasVendidos(inicioDT, finDT);
-                modelo.setProductos(filtrados);
+                // aca reemplazar para mostrar solo lo filtrado
+                listaReporte=dvs.getProductosMasVendidos(inicioDT, finDT);
+                modelo.setProductos(listaReporte);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

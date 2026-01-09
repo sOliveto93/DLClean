@@ -15,10 +15,12 @@ import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +47,16 @@ public abstract class PlantillaPanelProductos extends BasePanel {
         tabla.setFont(new Font("SansSerif", Font.BOLD, 16));
         tabla.setRowHeight(25);
         tabla.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 16));
-        tabla.getColumnModel().getColumn(3).setCellRenderer(new RendererStock());
+
+        ZebraTableCellRenderer zebra = new ZebraTableCellRenderer();
+
+        for (int i = 0; i < tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(zebra);
+        }
+        tabla.getColumnModel()
+                .getColumn(3)
+                .setCellRenderer(new RendererStock());
+
 
         TableRowSorter<ModeloTablaProductos> sorter = new TableRowSorter<>(modeloTabla);
         tabla.setRowSorter(sorter);

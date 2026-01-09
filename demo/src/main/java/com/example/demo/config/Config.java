@@ -1,7 +1,7 @@
 package com.example.demo.config;
 
 import java.io.FileInputStream;
-import java.util.Properties;
+import java.util.*;
 
 public class Config {
     private static Config instance;
@@ -25,6 +25,22 @@ public class Config {
 
     public String get(String key) {
         return props.getProperty(key);
+    }
+    public Map<String,String> imagenes(){
+        Map<String,String> mapaImagenes=new HashMap<>();
+
+        //esto devuelve las claves
+        for(String key: props.stringPropertyNames()){
+            if(key.endsWith("PNG") || key.endsWith("JPG")){
+                //esto devuelve el valor
+                String ruta= props.getProperty(key);
+
+                if(ruta != null && !ruta.isEmpty()){
+                    mapaImagenes.put(key,ruta);
+                }
+            }
+        }
+        return mapaImagenes;
     }
     // Getter específico para el tema
     public String getTheme() {

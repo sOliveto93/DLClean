@@ -7,41 +7,36 @@ import com.example.demo.entity.Producto;
 import com.example.demo.entity.Venta;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
-import com.example.demo.utils.CsvLoader;
+import com.example.demo.utils.ImageLoader;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MainPanel extends BasePanel {
-    JButton botonCrudProducto,botonProductos,botonVentaRapida, botonReporteMasVendido,botonReporteVentas;
-    Image backGround;
-    Config config=Config.getInstance("config/config.properties");
-    VentaService ventaService;
-    ProductoService ps;
+    private JButton botonCrudProducto,botonProductos,botonVentaRapida, botonReporteMasVendido,botonReporteVentas;
+    private Image backGround;
+
+    private ImageLoader imageLoader;
+    private VentaService ventaService;
+    private ProductoService ps;
     public MainPanel(EventBus eventBus, VentaService ventaService, ProductoService ps){
         super(eventBus);
         this.ventaService=ventaService;
-    this.ps=ps;
+        this.ps=ps;
 
-        String rutaImagen = config.get("backgroundImage");
-        try {
-            backGround = ImageIO.read(new File(rutaImagen));
-        } catch (IOException e) {
-            backGround = null; // fallback si no se encuentra la imagen
-            System.err.println("No se pudo cargar la imagen de fondo: " + rutaImagen);
+        imageLoader=ImageLoader.getInstance();
+        Optional<BufferedImage> op=imageLoader.getImage("backgroundImageJPG");
+        if(op.isPresent()){
+            backGround =op.get();
         }
-
-
-
     }
 
     @PostConstruct
@@ -58,11 +53,11 @@ public class MainPanel extends BasePanel {
         this.add(titulo, BorderLayout.NORTH);
 
         // Creamos botones
-        botonCrudProducto = crearBoton("CRUD PRODUCTOS", new Color(100, 181, 246));
-        botonProductos = crearBoton("Inventario", new Color(129, 199, 132));
-        botonVentaRapida = crearBoton("Venta Rápida", new Color(255, 224, 130));
-        botonReporteMasVendido = crearBoton("Reportes Mas Vendidos", new Color(239, 154, 154));
-        botonReporteVentas = crearBoton("Reporte Ventas", new Color(186, 104, 200));
+        botonCrudProducto = crearBoton("CRUD PRODUCTOS", new Color(100, 181, 246),"presentacion2PNG");
+        botonProductos = crearBoton("Inventario", new Color(129, 199, 132),"impresora1PNG");
+        botonVentaRapida = crearBoton("Venta Rápida", new Color(255, 224, 130),"dineroPNG");
+        botonReporteMasVendido = crearBoton("Reportes Mas Vendidos", new Color(239, 154, 154),"presentacion1PNG");
+        botonReporteVentas = crearBoton("Reporte Ventas", new Color(186, 104, 200),"reportesPNG");
 
         botonProductos.addActionListener(e -> eventBus.publish("panelProductos"));
         botonCrudProducto.addActionListener(e -> eventBus.publish("panelCrudProductos"));
@@ -70,7 +65,7 @@ public class MainPanel extends BasePanel {
         botonReporteMasVendido.addActionListener(e -> eventBus.publish("panelReporteMasVendido"));
         botonReporteVentas.addActionListener(e -> eventBus.publish("panelReporteVentas"));
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        JPanel panelBotones = new JPanel(new GridLayout(3, 12, 15, 15));
         panelBotones.setOpaque(false);
         panelBotones.add(botonProductos);
         panelBotones.add(botonCrudProducto);
@@ -139,13 +134,17 @@ public class MainPanel extends BasePanel {
     /**
      * Crea un botón con estilo moderno
      */
-    private JButton crearBoton(String texto, Color color) {
+    private JButton crearBoton(String texto, Color color,String keyImg) {
         JButton boton = new JButton(texto);
         //boton.setPreferredSize(new Dimension(200, 60)); // ancho x alto
         boton.setMinimumSize(new Dimension(200, 60));
         boton.setFont(new Font("SansSerif", Font.BOLD, 14));
         boton.setForeground(Color.WHITE);
         boton.setBackground(color);
+        if(!keyImg.isEmpty()){
+            Optional<BufferedImage> op=imageLoader.getImage(keyImg);
+            op.ifPresent(img->boton.setIcon(new ImageIcon(img.getScaledInstance(40,40,Image.SCALE_SMOOTH))));
+        }
         boton.setFocusPainted(false); // elimina el borde de foco
         boton.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));// padding interno
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));

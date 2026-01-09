@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ModeloTablaReportesProductoMasVendido extends AbstractTableModel {
 
-    private final String[] columnas= {"Codigo", "Nombre", "Precio", "total"};
+    private final String[] columnas= {"Codigo", "Nombre", "Cantidad", "total"};
     private List<ProductoMasVendidoDto> lista;
 
     public ModeloTablaReportesProductoMasVendido(List<ProductoMasVendidoDto> lista){
@@ -36,7 +36,7 @@ public class ModeloTablaReportesProductoMasVendido extends AbstractTableModel {
         switch (columnIndex){
             case 0: return p.getProducto().getCodigo();
             case 1: return p.getProducto().getNombre();
-            case 2: return p.getProducto().getPrecioVenta();
+            case 2: return p.getCantidadVendida();
             case 3: return p.getTotalFacturado();
             default: return null;
         }
@@ -52,7 +52,7 @@ public class ModeloTablaReportesProductoMasVendido extends AbstractTableModel {
         switch (columnIndex) {
             case 0: return Long.class;    // Codigo
             case 1: return String.class;  // Nombre
-            case 2: return Double.class;  // Precio
+            case 2: return Long.class;  // Cantidad
             case 3: return Double.class; // Stock
             default: return Object.class;
         }
