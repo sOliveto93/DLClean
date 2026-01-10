@@ -10,5 +10,5 @@ public abstract class BasePanel extends JPanel {
         this.eventBus=eventBus;
     }
     protected abstract void inicializarComponentes();
-
+    public void init(){}
 }

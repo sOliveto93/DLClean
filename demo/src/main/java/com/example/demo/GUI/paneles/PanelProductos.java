@@ -38,6 +38,11 @@ public class PanelProductos extends PlantillaPanelProductos {
 
     }
 
+    @Override
+    public void init() {
+
+    }
+
 
     @Override
     protected void onProductoSeleccionado(Producto producto) {

@@ -56,6 +56,11 @@ public class PanelReporteMasVendido extends BasePanel {
 
     }
 
+    @Override
+    public void init() {
+
+    }
+
     public void configurarTabla() {
         modelo = new ModeloTablaReportesProductoMasVendido(listaReporte);
         tablaDetalle = new JTable(modelo);

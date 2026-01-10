@@ -62,6 +62,12 @@ public class PanelDashboard extends BasePanel {
 
         setLayout(new GridLayout(7, 5, 3, 3)); // 35 celdas
     }
+
+    @Override
+    public void init() {
+
+    }
+
     public void suscribirEventos(){
         eventBus.subscribe("ventaCreada",(data)->{
 

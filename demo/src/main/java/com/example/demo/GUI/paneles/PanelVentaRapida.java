@@ -1,12 +1,15 @@
 package com.example.demo.GUI.paneles;
 
+import com.example.demo.Enum.EstadoCaja;
 import com.example.demo.Enum.MetodoPago;
 import com.example.demo.GUI.base.PlantillaPanelProductos;
 import com.example.demo.GUI.listener.EventBus;
 import com.example.demo.GUI.modeloTabla.ItemVentaUI;
 import com.example.demo.GUI.modeloTabla.ModeloTablaVentas;
+import com.example.demo.entity.Caja;
 import com.example.demo.entity.Producto;
 import com.example.demo.entity.Venta;
+import com.example.demo.service.CajaService;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
 import org.springframework.stereotype.Component;
@@ -17,6 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Optional;
 
 @Component
 public class PanelVentaRapida extends PlantillaPanelProductos {
@@ -29,11 +33,13 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
     private JComboBox<MetodoPago> comboBoxmetodoPago;
     private JLabel lblTotal;
 
-    ProductoService productoService;
+    private ProductoService productoService;
+    private CajaService cajaService;
 
-    public PanelVentaRapida(ProductoService productoService, VentaService ventaService, EventBus eventBus) {
+    public PanelVentaRapida(ProductoService productoService, VentaService ventaService, CajaService cajaService, EventBus eventBus) {
         super(productoService, ventaService, eventBus);
         this.productoService = productoService;
+        this.cajaService=cajaService;
         inicializarComponentes();
 
     }
@@ -62,6 +68,11 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         cargarProductos(null);
         configurarEventos();
         agregarListenerDobleClick();
+    }
+
+    @Override
+    public void init() {
+
     }
 
 
@@ -190,7 +201,7 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
 
     public void configurarEventos() {
         btnConfirmarCompra.addActionListener(e -> {
-            confirmarVenta();
+                confirmarVenta();
         });
         btnLimpiarCompra.addActionListener(e -> {
             modeloDetalle.clear();
@@ -228,7 +239,20 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
         lblTotal.setText(String.format("Total: $ %.2f", total));
     }
 
+    private boolean hayCajaAbierta() {
+        Optional<Caja> opCaja = cajaService.getUltimaCaja();
+        return opCaja.isPresent() && opCaja.get().getEstado() != EstadoCaja.CERRADA;
+    }
     public void confirmarVenta() {
+
+        if(!hayCajaAbierta()) {
+            JOptionPane.showMessageDialog(this,
+                    "No hay caja abierta. Debes abrir una para facturar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         Venta ventaCreada = super.crearVenta(modeloDetalle, comboBoxmetodoPago);
         if (ventaCreada == null) {
             JOptionPane.showMessageDialog(this,

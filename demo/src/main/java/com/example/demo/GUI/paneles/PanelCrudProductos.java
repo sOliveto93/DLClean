@@ -67,6 +67,11 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         agregarListenerSeleccionParaLista();
     }
 
+    @Override
+    public void init() {
+        System.out.println("hola ----------------------------");
+    }
+
     private void configurarSidePanels() {
 
 

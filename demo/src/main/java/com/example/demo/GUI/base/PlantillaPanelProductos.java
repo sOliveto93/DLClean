@@ -198,4 +198,6 @@ public abstract class PlantillaPanelProductos extends BasePanel {
         return panel;
     }
 
+    @Override
+    public void init(){}
 }

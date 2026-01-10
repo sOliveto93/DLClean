@@ -21,12 +21,13 @@ import java.util.Optional;
 
 @Component
 public class MainPanel extends BasePanel {
-    private JButton botonCrudProducto,botonProductos,botonVentaRapida, botonReporteMasVendido,botonReporteVentas;
+    private JButton botonCrudProducto,botonProductos,botonVentaRapida, botonReporteMasVendido,botonReporteVentas,botonGestionCaja;
     private Image backGround;
 
     private ImageLoader imageLoader;
     private VentaService ventaService;
     private ProductoService ps;
+
     public MainPanel(EventBus eventBus, VentaService ventaService, ProductoService ps){
         super(eventBus);
         this.ventaService=ventaService;
@@ -58,12 +59,14 @@ public class MainPanel extends BasePanel {
         botonVentaRapida = crearBoton("Venta Rápida", new Color(255, 224, 130),"dineroPNG");
         botonReporteMasVendido = crearBoton("Reportes Mas Vendidos", new Color(239, 154, 154),"presentacion1PNG");
         botonReporteVentas = crearBoton("Reporte Ventas", new Color(186, 104, 200),"reportesPNG");
+        botonGestionCaja = crearBoton("Gestion Caja", new Color(186, 104, 200),"chanchitoPNG");
 
         botonProductos.addActionListener(e -> eventBus.publish("panelProductos"));
         botonCrudProducto.addActionListener(e -> eventBus.publish("panelCrudProductos"));
         botonVentaRapida.addActionListener(e -> eventBus.publish("panelVentaRapida"));
         botonReporteMasVendido.addActionListener(e -> eventBus.publish("panelReporteMasVendido"));
         botonReporteVentas.addActionListener(e -> eventBus.publish("panelReporteVentas"));
+        botonGestionCaja.addActionListener(e -> eventBus.publish("panelGestionCaja"));
 
         JPanel panelBotones = new JPanel(new GridLayout(3, 12, 15, 15));
         panelBotones.setOpaque(false);
@@ -72,6 +75,7 @@ public class MainPanel extends BasePanel {
         panelBotones.add(botonVentaRapida);
         panelBotones.add(botonReporteMasVendido);
         panelBotones.add(botonReporteVentas);
+        panelBotones.add(botonGestionCaja);
 
         this.add(panelBotones, BorderLayout.NORTH);
 

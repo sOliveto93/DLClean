@@ -56,6 +56,11 @@ public class PanelReporteVentaDiarioActual extends BasePanel {
         suscribirEventos();
     }
 
+    @Override
+    public void init() {
+
+    }
+
     public void suscribirEventos(){
         eventBus.subscribe("ventaCreada", (data) -> sumarTotalDiario((Venta) data));
     }

@@ -69,6 +69,10 @@ public class PanelReporteVentas extends BasePanel {
         recalcularTotal(listaReporte);
     }
 
+    @Override
+    public void init() {
+
+    }
 
 
     public void configurarTabla() {

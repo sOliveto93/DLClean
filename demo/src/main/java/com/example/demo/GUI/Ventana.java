@@ -3,16 +3,11 @@ package com.example.demo.GUI;
 
 import com.example.demo.GUI.base.BasePanel;
 import com.example.demo.GUI.listener.EventBus;
-import com.example.demo.entity.Producto;
-import com.example.demo.repository.ProductoRepository;
-import com.example.demo.utils.CsvLoader;
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -33,6 +28,7 @@ public class Ventana  extends JFrame  {
         suscribirseAEVento("panelVentaRapida");
         suscribirseAEVento("panelReporteMasVendido");
         suscribirseAEVento("panelReporteVentas");
+        suscribirseAEVento("panelGestionCaja");
         configurarVentana();
 
 
@@ -53,6 +49,7 @@ public class Ventana  extends JFrame  {
         this.add(panelActual, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();
+        panelActual.init();
     }
     public void suscribirseAEVento(String evento){
         eventBus.subscribe(evento, () -> {

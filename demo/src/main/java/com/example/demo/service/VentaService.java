@@ -108,6 +108,9 @@ public class VentaService {
         Double total = vr.totalVentasEntreFechas(start, end);
         return total != null ? total : 0.0;
     }
+    public List<Venta> getVentasEntreFechas(LocalDateTime inicio, LocalDateTime fin){
+        return vr.findByFechaBetween(inicio,fin);
+    }
      public void save(Venta nuevaVenta){
         vr.save(nuevaVenta);
     }

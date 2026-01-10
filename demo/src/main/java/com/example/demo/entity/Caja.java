@@ -1,11 +1,9 @@
 package com.example.demo.entity;
 
 import com.example.demo.Enum.EstadoCaja;
+import com.example.demo.dto.TotalesCajaDto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -14,19 +12,28 @@ public class Caja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime fechaHoraApertura;
-    private LocalDateTime fechaHoraCierre;
-    private double efectivoApertura;
-    private double efectivoCierre;
-    private double totalEfectivoSistema;
-    private double totalMP;
-    private double totalTarjetas;
-    private double totalTranferencias;
-    private double retiros;
-    private String observaciones;
-    private EstadoCaja estado;
-    private double diferencia;
 
+    @Column(nullable = false)
+    private LocalDateTime fechaHoraApertura;
+
+    private LocalDateTime fechaHoraCierre;
+    @Column(nullable = false)
+    private double efectivoApertura;
+
+    private double efectivoCierre;
+
+    private double dineroTotal;
+    private double totalDineroEfectivo;
+    private double totalDineroMP;
+    private double totalDineroTarjetas;
+    private double totalDineroTransferencias;
+    private double retiros;
+    private double diferencia;
+    private String observaciones;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoCaja estado;
     protected Caja() {
     }
 
@@ -53,6 +60,9 @@ public class Caja {
         return efectivoApertura;
     }
 
+    public double getEfectivoEsperado() {
+        return efectivoApertura + totalDineroEfectivo - retiros;
+    }
 
 
     public double getEfectivoCierre() {
@@ -61,24 +71,26 @@ public class Caja {
 
 
 
-    public double getTotalEfectivoSistema() {
-        return totalEfectivoSistema;
+    public double getDineroTotal() {
+        return dineroTotal;
+    }
+    public double getTotalDineroEfectivo(){
+        return totalDineroEfectivo;
+    }
+
+    public double getTotalDineroMP() {
+        return totalDineroMP;
     }
 
 
-    public double getTotalMP() {
-        return totalMP;
+
+    public double getTotalDineroTarjetas() {
+        return totalDineroTarjetas;
     }
 
 
-
-    public double getTotalTarjetas() {
-        return totalTarjetas;
-    }
-
-
-    public double getTotalTranferencias() {
-        return totalTranferencias;
+    public double getTotalDineroTransferencias() {
+        return totalDineroTransferencias;
     }
 
 
@@ -97,7 +109,7 @@ public class Caja {
     }
 
     public double getDiferencia() {
-        return efectivoCierre - totalEfectivoSistema;
+        return  diferencia;
     }
     @Override
     public boolean equals(Object o) {
@@ -116,18 +128,20 @@ public class Caja {
         return "Caja{" +
                 "id=" + id +
                 ", fechaHoraApertura=" + fechaHoraApertura +
-                ", FechaHoraCierre=" + fechaHoraCierre +
+                ", fechaHoraCierre=" + fechaHoraCierre +
                 ", efectivoApertura=" + efectivoApertura +
                 ", efectivoCierre=" + efectivoCierre +
-                ", totalEfectivoSistema=" + totalEfectivoSistema +
-                ", totalMP=" + totalMP +
-                ", totalTarjetas=" + totalTarjetas +
-                ", totalTranferencias=" + totalTranferencias +
+                ", dineroTotal=" + dineroTotal +
+                ", totalDineroEfectivo=" + totalDineroEfectivo +
+                ", totalDineroMP=" + totalDineroMP +
+                ", totalDineroTarjetas=" + totalDineroTarjetas +
+                ", totalDineroTransferencias=" + totalDineroTransferencias +
                 ", retiros=" + retiros +
                 ", observaciones='" + observaciones + '\'' +
                 ", estado=" + estado +
                 '}';
     }
+
     private void abrir(double efectivoInicial) {
         if (this.estado == EstadoCaja.ABIERTA) {
             throw new IllegalStateException("La caja ya está abierta");
@@ -136,18 +150,36 @@ public class Caja {
         this.fechaHoraApertura = LocalDateTime.now();
         this.estado = EstadoCaja.ABIERTA;
     }
-    public void cerrar(double efectivoReal, String observaciones) {
+    public void cerrar(
+            double efectivoReal,
+            TotalesCajaDto totales,
+            String observaciones
+    ) {
         if (this.estado != EstadoCaja.ABIERTA) {
-            throw new IllegalStateException("No se puede cerrar una caja que no está abierta");
+            throw new IllegalStateException("La caja no está abierta");
         }
 
         this.efectivoCierre = efectivoReal;
-        this.fechaHoraCierre = LocalDateTime.now();
         this.observaciones = observaciones;
-        this.diferencia = efectivoReal - this.totalEfectivoSistema;
-        this.estado = EstadoCaja.CERRADA;
-    }
 
+        this.totalDineroEfectivo=totales.getTotalEfectivo();
+        this.totalDineroMP = totales.getTotalMP();
+        this.totalDineroTarjetas = totales.getTotalTarjetas();
+        this.totalDineroTransferencias = totales.getTotalTransferencias();
+
+        double efectivoEsperado = this.efectivoApertura + this.totalDineroEfectivo - this.retiros;
+
+
+        this.dineroTotal =
+                totales.getTotalEfectivo()
+                        + totales.getTotalMP()
+                        + totales.getTotalTarjetas()
+                        + totales.getTotalTransferencias();
+        this.diferencia = efectivoReal - efectivoEsperado;
+
+        this.estado = EstadoCaja.CERRADA;
+        this.fechaHoraCierre = LocalDateTime.now();
+    }
     public static Caja abrirNueva(double efectivoInicial) {
         Caja caja = new Caja();
         caja.abrir(efectivoInicial);

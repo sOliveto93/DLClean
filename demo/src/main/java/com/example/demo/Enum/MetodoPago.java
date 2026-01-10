@@ -4,5 +4,5 @@ public enum MetodoPago {
     MERCADOPAGO,
     TARJETA,
     EFECTIVO,
-    TRANFERENCIA
+    TRANSFERENCIA
 }
