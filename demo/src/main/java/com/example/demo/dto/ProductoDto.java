@@ -5,6 +5,7 @@ import com.example.demo.Enum.Categoria;
 public class ProductoDto {
 
     private final String nombre;
+    private final double precioCosto;
     private final double precio;
     private final Categoria categoria;
     private final int stock;
@@ -13,6 +14,7 @@ public class ProductoDto {
     private ProductoDto(Builder builder) {
         this.codigo=builder.codigo;
         this.nombre = builder.nombre;
+        this.precioCosto=builder.precioCosto;
         this.precio = builder.precio;
         this.categoria = builder.categoria;
         this.stock = builder.stock;
@@ -24,6 +26,7 @@ public class ProductoDto {
     public static class Builder{
         private long codigo;
         private String nombre;
+        private double precioCosto;
         private double precio;
         private Categoria categoria;
         private int stock;
@@ -32,7 +35,10 @@ public class ProductoDto {
             this.nombre = nombre;
             return this;
         }
-
+        public Builder setPrecioCosto(double precioCosto){
+            this.precioCosto=precioCosto;
+            return this;
+        }
         public Builder setPrecio(double precio) {
             this.precio = precio;
             return this;
@@ -53,6 +59,10 @@ public class ProductoDto {
         public ProductoDto build(){
             if (nombre == null || nombre.isEmpty())
                 throw new IllegalStateException("El nombre no puede estar vacío");
+            if (precioCosto > precio)
+                throw new IllegalStateException("El costo no puede ser mayor al precio venta");
+            if (precioCosto < 0)
+                throw new IllegalStateException("El precio costo no puede ser negativo");
             if (precio < 0)
                 throw new IllegalStateException("El precio no puede ser negativo");
             if (categoria == null)
@@ -67,7 +77,7 @@ public class ProductoDto {
     public String getNombre() {
         return nombre;
     }
-
+    public double getPrecioCosto(){return precioCosto;}
     public double getPrecio() {
         return precio;
     }

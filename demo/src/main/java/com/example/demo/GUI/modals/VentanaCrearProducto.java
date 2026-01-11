@@ -10,6 +10,7 @@ public class VentanaCrearProducto extends JDialog {
 
     private JTextField txtNombre;
     private JComboBox<Categoria> comboCategoria;
+    private JTextField txtPrecioCosto;
     private JTextField txtPrecio;
     private JTextField txtStock;
     private JTextField txtCodigo;
@@ -27,8 +28,10 @@ public class VentanaCrearProducto extends JDialog {
     }
 
     public void inicializarComponentes() {
-        setLayout(new BorderLayout());
-        JPanel panelCampos = new JPanel(new GridLayout(5, 2, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+
+        JPanel panelCampos = new JPanel(new GridLayout(6, 2, 8, 8));
+        panelCampos.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panelCampos.add(new JLabel("Nombre:"));
         txtNombre = new JTextField();
@@ -38,6 +41,10 @@ public class VentanaCrearProducto extends JDialog {
         comboCategoria = new JComboBox<>(Categoria.values());
         panelCampos.add(comboCategoria);
 
+        panelCampos.add(new JLabel("Precio Costo:"));
+        txtPrecioCosto = new JTextField();
+        panelCampos.add(txtPrecioCosto);
+
         panelCampos.add(new JLabel("Precio:"));
         txtPrecio = new JTextField();
         panelCampos.add(txtPrecio);
@@ -46,14 +53,15 @@ public class VentanaCrearProducto extends JDialog {
         txtStock = new JTextField();
         panelCampos.add(txtStock);
 
-        panelCampos.add(new JLabel("Codigo:"));
-        txtCodigo=new JTextField();
+        panelCampos.add(new JLabel("Código:"));
+        txtCodigo = new JTextField();
         panelCampos.add(txtCodigo);
 
         btnCrear = new JButton("Crear");
         btnCancelar = new JButton("Cancelar");
 
-        JPanel panelBotones = new JPanel();
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
         panelBotones.add(btnCrear);
         panelBotones.add(btnCancelar);
 
@@ -65,15 +73,17 @@ public class VentanaCrearProducto extends JDialog {
         btnCrear.addActionListener(e -> {
             String nombre = txtNombre.getText().trim();
             String codigoTxt=txtCodigo.getText().trim();
+            String precioCostoTxt = txtPrecioCosto.getText().trim();
             String precioTxt = txtPrecio.getText().trim();
             String stockTxt = txtStock.getText().trim();
 
-            if (nombre.isEmpty() ||  codigoTxt.isEmpty() || precioTxt.isEmpty() || stockTxt.isEmpty()) {
+            if (nombre.isEmpty() ||  codigoTxt.isEmpty() || precioCostoTxt.isEmpty() || precioTxt.isEmpty() || stockTxt.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
                 return;
             }
 
             try {
+                double precioCosto=Double.parseDouble(precioCostoTxt);
                 double precio = Double.parseDouble(precioTxt);
                 int stock = Integer.parseInt(stockTxt);
                 long codigo=Long.parseLong(codigoTxt);
@@ -82,6 +92,7 @@ public class VentanaCrearProducto extends JDialog {
                 productoCreado = new ProductoDto.Builder()
                         .setNombre(nombre)
                         .setCategoria(categoriaSeleccionada)
+                        .setPrecioCosto(precioCosto)
                         .setPrecio(precio)
                         .setStock(stock)
                         .setCodigo(codigo)

@@ -4,6 +4,7 @@ import com.example.demo.Enum.EstadoCaja;
 import com.example.demo.GUI.base.BasePanel;
 
 import com.example.demo.GUI.listener.EventBus;
+import com.example.demo.GUI.modeloTabla.ModeloTablaCajas;
 import com.example.demo.dto.CajaDto;
 import com.example.demo.dto.TotalesCajaDto;
 import com.example.demo.entity.Caja;
@@ -31,6 +32,8 @@ public class PanelGestionCaja extends BasePanel {
     JLabel estadoCaja;
     JLabel observaciones;
     Caja cajaActual;
+    Font labelFont = new Font("SansSerif", Font.PLAIN, 13);
+    Font valueFont = new Font("SansSerif", Font.BOLD, 13);
 
     public PanelGestionCaja(CajaService cajaService, EventBus eventBus) {
         super(eventBus);
@@ -41,14 +44,37 @@ public class PanelGestionCaja extends BasePanel {
     @Override
     protected void inicializarComponentes() {
         this.setLayout(new BorderLayout(10, 10));
+        this.setBorder(
+                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+        );
 
         this.add(configurarPanelHeader(), BorderLayout.NORTH);
 
-        this.add(configurarPanelEstado(), BorderLayout.CENTER);
+        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.add(configurarPanelEstado(), BorderLayout.NORTH);
+        centerPanel.add(configurarPanelListaCajas(), BorderLayout.CENTER);
 
+        this.add(centerPanel, BorderLayout.CENTER);
         this.add(configurarPanelBotones(), BorderLayout.SOUTH);
 
+
         configurarListener();
+    }
+
+    private JPanel configurarPanelListaCajas() {
+        JPanel panel=new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Historial de Cajas"));
+        ModeloTablaCajas modelo=new ModeloTablaCajas(cajaService.getLast10());
+        JTable tablaCajas=new JTable(modelo);
+
+        tablaCajas.setRowHeight(24);
+        tablaCajas.setAutoCreateRowSorter(true);
+        tablaCajas.setFillsViewportHeight(true);
+        tablaCajas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+
+        panel.add(new JScrollPane(tablaCajas),BorderLayout.CENTER);
+        return panel;
     }
 
     private JPanel configurarPanelHeader() {
@@ -62,7 +88,7 @@ public class PanelGestionCaja extends BasePanel {
     }
 
     private JPanel configurarPanelEstado() {
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
         panel.setBorder(BorderFactory.createTitledBorder("Caja Actual"));
 
         JLabel lblFechaHoraApertura = new JLabel("Fecha y hora de apertura:");
@@ -85,6 +111,28 @@ public class PanelGestionCaja extends BasePanel {
         estadoCaja = new JLabel("---");
         JLabel lblObservaciones=new JLabel("Observaciones:");
         observaciones=new JLabel("---");
+
+        lblFechaHoraApertura.setFont(labelFont);
+        fechaHoraApertura.setFont(valueFont);
+
+        lblEfectivoApertura.setFont(labelFont);
+        valEfectivoApertura.setFont(valueFont);
+
+        lblTotalSistema.setFont(labelFont);
+        valTotalSistema.setFont(valueFont);
+
+        lblEfectivoEsperado.setFont(labelFont);
+        valEfectivoEsperado.setFont(valueFont);
+
+        lblDiferencia.setFont(labelFont);
+        valDiferencia.setFont(valueFont);
+
+        lblestadoCaja.setFont(labelFont);
+        estadoCaja.setFont(valueFont);
+
+        lblObservaciones.setFont(labelFont);
+        observaciones.setFont(valueFont);
+
         panel.add(lblFechaHoraApertura);
         panel.add(fechaHoraApertura);
         panel.add(lblEfectivoApertura);

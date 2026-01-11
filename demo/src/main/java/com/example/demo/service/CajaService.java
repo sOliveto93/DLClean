@@ -78,4 +78,8 @@ public class CajaService {
         return new TotalesCajaDto(efectivo, mp, tarjetas, transferencias);
     }
 
+    public List<Caja> getLast10() {
+        return cr.findTop10ByOrderByFechaHoraAperturaDesc();
+
+    }
 }

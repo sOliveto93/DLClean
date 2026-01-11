@@ -21,14 +21,18 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
     JLabel labelProductoNombre;
     JLabel labelProductoCategoria;
+    JLabel labelProductoPrecioCosto;
     JLabel labelProductoPrecio;
     JLabel labelProductoStock;
     JLabel labelProductoCodigo;
+    JLabel labelProductoCodigoBarra;
 
     private JTextField txtNombreNuevo;
     private JTextField txtCategoriaNueva;
+    private JTextField txtPrecioCostoNuevo;
     private JTextField txtPrecioNuevo;
     private JTextField txtStockNuevo;
+    private JTextField txtCodigoBarraNuevo;
 
     private JTextField busqueda;
 
@@ -86,64 +90,94 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         labelProductoCodigo.setText(String.valueOf(producto.getCodigo()));
         labelProductoNombre.setText(producto.getNombre());
         labelProductoCategoria.setText(producto.getCategoria().toString());
+        labelProductoPrecioCosto.setText(String.valueOf(producto.getPrecioCosto()));
         labelProductoPrecio.setText(String.valueOf(producto.getPrecioVenta()));
         labelProductoStock.setText(String.valueOf(producto.getStock()));
+        labelProductoCodigoBarra.setText(producto.getCodigoBarra());
         //para usarlo internamente luego
         setProductoSeleccionado(producto);
     }
+    private void agregarFila(JPanel panel, GridBagConstraints gbc, int row,
+                             String nombreCampo, JLabel valorActual, JTextField nuevoValor) {
+
+        gbc.gridy = row;
+
+        gbc.gridx = 0;
+        panel.add(new JLabel(nombreCampo + ":"), gbc);
+
+        gbc.gridx = 1;
+        panel.add(valorActual, gbc);
+
+        gbc.gridx = 2;
+        if (nuevoValor != null) {
+            panel.add(nuevoValor, gbc);
+        } else {
+            panel.add(new JLabel(""), gbc);
+        }
+    }
 
     public JPanel configurarPanelEdicion() {
-        JPanel panelDeEdicion = new JPanel();
-        panelDeEdicion.setLayout(new BorderLayout());
-        panelDeEdicion.setBackground(Color.BLACK);
+        JPanel panelDeEdicion = new JPanel(new BorderLayout(10, 10));
+        panelDeEdicion.setPreferredSize(new Dimension(420, 0));
+        panelDeEdicion.setBackground(Color.WHITE);
 
-        JLabel titulo = new JLabel("panel de edicion");
-        JPanel panelDatosProducto = new JPanel();
-        panelDatosProducto.setLayout(new GridLayout(6, 3, 5, 5));
-        panelDatosProducto.setBackground(Color.white);
-
-        labelProductoNombre = new JLabel("-");
-        labelProductoCategoria = new JLabel("-");
-        labelProductoPrecio = new JLabel("-");
-        labelProductoStock = new JLabel("-");
-        labelProductoCodigo = new JLabel("-");
-
-        txtNombreNuevo = new JTextField();
-        txtCategoriaNueva = new JTextField();
-        txtPrecioNuevo = new JTextField();
-        txtStockNuevo = new JTextField();
-
-
-        btnConfirmarCambios = new JButton("confirmar cambios");
-        btnCrearProducto= new JButton("Crear Producto");
-        btnEliminarProducto=new JButton("Eliminar Producto");
+        JLabel titulo = new JLabel("Panel de edición", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 16));
+        titulo.setForeground(Color.DARK_GRAY);
+        titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         panelDeEdicion.add(titulo, BorderLayout.NORTH);
 
-        panelDatosProducto.add(new JLabel("codigo:"));
-        panelDatosProducto.add(labelProductoCodigo);
-        panelDatosProducto.add(new JLabel());
+        JPanel panelDatosProducto = new JPanel(new GridBagLayout());
+        panelDatosProducto.setBackground(Color.WHITE);
 
-        panelDatosProducto.add(new JLabel("Nombre:"));
-        panelDatosProducto.add(labelProductoNombre);
-        panelDatosProducto.add(txtNombreNuevo);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 8, 5, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        panelDatosProducto.add(new JLabel("Categoria"));
-        panelDatosProducto.add(labelProductoCategoria);
-        panelDatosProducto.add(txtCategoriaNueva);
+        int row = 0;
 
-        panelDatosProducto.add(new JLabel("Precio"));
-        panelDatosProducto.add(labelProductoPrecio);
-        panelDatosProducto.add(txtPrecioNuevo);
+        // ===== INICIALIZACIÓN =====
+        labelProductoCodigo = new JLabel("-");
+        labelProductoNombre = new JLabel("-");
+        labelProductoCategoria = new JLabel("-");
+        labelProductoPrecioCosto = new JLabel("-");
+        labelProductoPrecio = new JLabel("-");
+        labelProductoStock = new JLabel("-");
+        labelProductoCodigoBarra = new JLabel("-");
 
-        panelDatosProducto.add(new JLabel("Stock"));
-        panelDatosProducto.add(labelProductoStock);
-        panelDatosProducto.add(txtStockNuevo);
+        txtNombreNuevo = new JTextField();
+        txtCategoriaNueva = new JTextField();
+        txtPrecioCostoNuevo = new JTextField();
+        txtPrecioNuevo = new JTextField();
+        txtStockNuevo = new JTextField();
+        txtCodigoBarraNuevo = new JTextField();
 
-        panelDatosProducto.add(btnConfirmarCambios);
-        panelDatosProducto.add(btnCrearProducto);
-        panelDatosProducto.add(btnEliminarProducto);
+        // ===== FILAS =====
+        agregarFila(panelDatosProducto, gbc, row++, "Código", labelProductoCodigo, null);
+        agregarFila(panelDatosProducto, gbc, row++, "Nombre", labelProductoNombre, txtNombreNuevo);
+        agregarFila(panelDatosProducto, gbc, row++, "Categoría", labelProductoCategoria, txtCategoriaNueva);
+        agregarFila(panelDatosProducto, gbc, row++, "Costo", labelProductoPrecioCosto, txtPrecioCostoNuevo);
+        agregarFila(panelDatosProducto, gbc, row++, "Precio", labelProductoPrecio, txtPrecioNuevo);
+        agregarFila(panelDatosProducto, gbc, row++, "Stock", labelProductoStock, txtStockNuevo);
+        agregarFila(panelDatosProducto, gbc, row++, "Código Barra", labelProductoCodigoBarra, txtCodigoBarraNuevo);
+
         panelDeEdicion.add(panelDatosProducto, BorderLayout.CENTER);
+
+        // ===== BOTONES =====
+        JPanel panelBotones = new JPanel(new GridLayout(3, 1, 5, 5));
+        panelBotones.setBackground(Color.WHITE);
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        btnConfirmarCambios = new JButton("Confirmar cambios");
+        btnCrearProducto = new JButton("Crear producto");
+        btnEliminarProducto = new JButton("Eliminar producto");
+
+        panelBotones.add(btnConfirmarCambios);
+        panelBotones.add(btnCrearProducto);
+        panelBotones.add(btnEliminarProducto);
+
+        panelDeEdicion.add(panelBotones, BorderLayout.SOUTH);
 
         configurarEventos();
         return panelDeEdicion;
@@ -175,6 +209,21 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
             }
         }
 
+        String nuevoPrecioCosto = txtPrecioCostoNuevo.getText().trim();
+        if (!nuevoPrecioCosto.isEmpty()) {
+            if (isNumero(nuevoPrecioCosto)) {
+                double valor=Double.parseDouble(nuevoPrecioCosto);
+                if(valor >= 0){
+                    productoTemporal.setPrecioCosto(valor);
+                    seModifico = true;
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Precio Costo inválido: " + nuevoPrecioCosto);
+                    return false;
+                }
+            }
+        }
+
         String nuevoPrecio = txtPrecioNuevo.getText().trim();
         if (!nuevoPrecio.isEmpty()) {
             if (isNumero(nuevoPrecio)) {
@@ -203,6 +252,24 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
                 }
             }
         }
+
+        String nuevoCodigoBarra = txtCodigoBarraNuevo.getText().trim();
+        if (!nuevoCodigoBarra.isEmpty()) {
+            Optional<Producto> op = productoService.getByCodigoBarra(nuevoCodigoBarra);
+
+            if (op.isPresent() && !op.get().getId().equals(productoTemporal.getId())) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "El codigo de barra ya existe"
+                );
+                return false;
+            }
+
+            productoTemporal.setCodigoBarra(nuevoCodigoBarra);
+            seModifico = true;
+        }
+
+
         if (!seModifico) {
             JOptionPane.showMessageDialog(this, "No hay cambios para aplicar");
             return false;
@@ -213,16 +280,19 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
     public void limpiarCamposEdicion(){
         txtNombreNuevo.setText("");
         txtCategoriaNueva.setText("");
+        txtPrecioCostoNuevo.setText("");
         txtPrecioNuevo.setText("");
         txtStockNuevo.setText("");
+        txtCodigoBarraNuevo.setText("");
     }
     public void actualizarLabels(){
         labelProductoCodigo.setText("-");
         labelProductoNombre.setText("-");
         labelProductoCategoria.setText("-");
+        labelProductoPrecioCosto.setText("-");
         labelProductoPrecio.setText("-");
         labelProductoStock.setText("-");
-
+        labelProductoCodigoBarra.setText("-");
     }
     public void configurarEventos(){
         btnConfirmarCambios.addActionListener(e -> {
