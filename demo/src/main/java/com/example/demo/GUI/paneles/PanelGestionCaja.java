@@ -218,10 +218,30 @@ public class PanelGestionCaja extends BasePanel {
                efectivoCaja,
                observaciones
        );
+       if (observaciones.isEmpty()) {
+           int confirm = JOptionPane.showConfirmDialog(
+                   this,
+                   "No ingresó observaciones.\n¿Desea cerrar la caja igualmente?",
+                   "Confirmar cierre",
+                   JOptionPane.YES_NO_OPTION,
+                   JOptionPane.WARNING_MESSAGE
+           );
 
-       cajaActual = cajaService.cerrarCaja(dto);
+           if (confirm != JOptionPane.YES_OPTION) return;
+       }
+       cajaActual=cajaService.cerrarCaja(dto);
        actualizarLabels();
        actualizarBotones();
+       if (cajaActual.getDiferencia() != 0) {
+           JOptionPane.showMessageDialog(
+                   this,
+                   "⚠ Se detecto una diferencia de "
+                           + cajaActual.getDiferencia(),
+                   "Cierre de caja",
+                   JOptionPane.WARNING_MESSAGE
+           );
+       }
+
    }
 
     private void abrirCajaDialog() {
