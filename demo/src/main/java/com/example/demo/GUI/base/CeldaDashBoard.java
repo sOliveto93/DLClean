@@ -20,9 +20,10 @@ public class CeldaDashBoard extends JPanel {
         this.nivel = calcularNivel(total);
         this.color = getColor(nivel);
 
-        setPreferredSize(new Dimension(15, 15));
-        setBackground(color);
-
+        setPreferredSize(new Dimension(22,22));
+        setToolTipText(
+                "📅 Fecha: "+fecha + " — $" + String.format("%,.2f", total)
+        );
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -35,36 +36,53 @@ public class CeldaDashBoard extends JPanel {
                 );
             }
         });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                color = color.brighter();
+                repaint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                color = getColor(nivel);
+                repaint();
+            }
+        });
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(getColor(nivel));
-        g.fillRect(0, 0, getWidth(), getHeight());
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2.setColor(color);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 6, 6);
+
+        g2.setColor(new Color(0, 0, 0, 40));
+        g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 6, 6);
+
+        g2.dispose();
     }
+
 
     private int calcularNivel(double total) {
         if (total == 0) return 0;
-        if (total < 5000) return 1;
-        if (total < 20000) return 2;
-        if (total < 50000) return 3;
+        if (total < 20000) return 1;
+        if (total < 50000) return 2;
+        if (total < 90000) return 3;
         return 4;
     }
 
     private Color getColor(int nivel) {
         // tu lógica
         switch (nivel) {
-            case 0:
-                return new Color(220, 220, 220);
-            case 1:
-                return new Color(150, 200, 150);
-            case 2:
-                return new Color(100, 180, 100);
-            case 3:
-                return new Color(50, 160, 50);
-            default:
-                return new Color(20, 120, 20);
+            case 0: return new Color(230, 230, 230);
+            case 1: return new Color(198, 239, 206);
+            case 2: return new Color(123, 201, 111);
+            case 3: return new Color(56, 142, 60);
+            default: return new Color(27, 94, 32);
         }
     }
 
@@ -75,6 +93,7 @@ public class CeldaDashBoard extends JPanel {
     public int getNivel() {
         return nivel;
     }
+
 }
 
 
