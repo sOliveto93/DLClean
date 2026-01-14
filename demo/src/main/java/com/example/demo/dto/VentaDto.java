@@ -7,6 +7,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Observable;
 
 public class VentaDto {
 
@@ -14,17 +15,21 @@ public class VentaDto {
     private final double total;
     private final List<DetalleVenta> detalles;
     private final MetodoPago metodoPago;
-
+    private final String observacion;
     private VentaDto(Builder builder){
         fecha=builder.fecha;
         total=builder.total;
         detalles=builder.detalles;
         metodoPago=builder.metodoPago;
+        observacion=builder.observacion;
     }
 
     public static Builder builder() {
         return new Builder();
     }
+
+
+
     public static class Builder {
 
         private LocalDateTime fecha;
@@ -32,7 +37,7 @@ public class VentaDto {
         private List<DetalleVenta> detalles;
 
         private MetodoPago metodoPago;
-
+        private String observacion;
         public Builder setFecha(LocalDateTime fecha) {
             this.fecha = fecha;
             return this;
@@ -47,6 +52,10 @@ public class VentaDto {
         }
         public Builder setMetodoPago(MetodoPago metodoPago) {
             this.metodoPago=metodoPago;
+            return this;
+        }
+        public Builder setObservacion(String observacion) {
+            this.observacion=observacion;
             return this;
         }
         public VentaDto build(){
@@ -68,5 +77,8 @@ public class VentaDto {
 
     public MetodoPago getMetodoPago() {
         return metodoPago;
+    }
+    public String getObsercion() {
+        return observacion;
     }
 }

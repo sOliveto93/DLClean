@@ -16,6 +16,7 @@ public class VentanaDetalleVenta extends JDialog {
 
     ImageLoader imageLoader;
     JButton botonImprimir;
+    JButton btnObservacion;
     List<DetalleVenta> detalles;
     Venta venta;
     public VentanaDetalleVenta(JFrame owner, Venta venta, List<DetalleVenta> detalles) {
@@ -24,6 +25,7 @@ public class VentanaDetalleVenta extends JDialog {
         this.venta=venta;
         imageLoader=ImageLoader.getInstance();
         botonImprimir=new JButton(new ImageIcon(imageLoader.getImage("impresora1PNG").get().getScaledInstance(32,32,Image.SCALE_SMOOTH)));
+        btnObservacion=new JButton(new ImageIcon(imageLoader.getImage("reportesPNG").get().getScaledInstance(32,32,Image.SCALE_SMOOTH)));
         this.setSize(500, 400);
         this.setLocationRelativeTo(owner);
         this.setLayout(new BorderLayout());
@@ -68,13 +70,27 @@ public class VentanaDetalleVenta extends JDialog {
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelBoton.add(botonImprimir);
         panelBoton.add(btnCerrar);
+        panelBoton.add(btnObservacion);
         this.add(panelBoton, BorderLayout.SOUTH);
 
         this.setVisible(true);
     }
     private void configurarEventos(){
         botonImprimir.addActionListener(e->imprimir());
+        btnObservacion.addActionListener(e->mostrarObservacion());
     }
+
+    private void mostrarObservacion() {
+        JTextArea area = new JTextArea(venta.getObservacion());
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setEditable(false);
+        JScrollPane scroll = new JScrollPane(area);
+        scroll.setPreferredSize(new Dimension(300, 150));
+        JOptionPane.showMessageDialog(this, scroll, "Observaciones", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
     public void imprimir(){
        String ticket= PrintTicket58.generarTicket(detalles,venta.getTotal(),venta.getFecha());
        System.out.println("-----------------------------------");

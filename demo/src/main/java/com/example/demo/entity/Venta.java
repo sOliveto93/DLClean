@@ -20,16 +20,19 @@ public class Venta {
     private List<DetalleVenta> detalles;
     @Enumerated(EnumType.STRING)
     private MetodoPago metodoPago;
+    private String observacion;
+
     public Venta() {
-        detalles=new ArrayList<>();
+        detalles = new ArrayList<>();
     }
 
-    public Venta(Long id, LocalDateTime fecha, double total, List<DetalleVenta> detalles,MetodoPago metodoPago) {
+    public Venta(Long id, LocalDateTime fecha, double total, List<DetalleVenta> detalles, MetodoPago metodoPago, String observacion) {
         this.id = id;
         this.fecha = fecha;
         this.total = total;
         this.detalles = detalles;
-        this.metodoPago=metodoPago;
+        this.metodoPago = metodoPago;
+        this.observacion = observacion;
     }
 
     public Long getId() {
@@ -64,12 +67,22 @@ public class Venta {
         this.detalles = detalles;
     }
 
-    public MetodoPago getMetodoPago(){
+    public MetodoPago getMetodoPago() {
         return this.metodoPago;
     }
-    public void setMetodoPago(MetodoPago metodoPago){
-        this.metodoPago=metodoPago;
+
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
     }
+
+    public String getObservacion() {
+        return this.observacion;
+    }
+
+    public void setObservacion(String o) {
+        this.observacion = o;
+    }
+
     @Override
     public String toString() {
         return "Venta{" +
@@ -77,6 +90,7 @@ public class Venta {
                 ", fecha=" + fecha +
                 ", total=" + total +
                 ", metodo de pago=" + metodoPago +
+                ", observacion=" + observacion +
                 '}';
     }
 }

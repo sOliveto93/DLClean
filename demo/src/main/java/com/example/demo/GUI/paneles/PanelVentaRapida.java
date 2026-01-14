@@ -252,8 +252,22 @@ public class PanelVentaRapida extends PlantillaPanelProductos {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
+        JTextArea area = new JTextArea(5, 25);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
 
-        Venta ventaCreada = super.crearVenta(modeloDetalle, comboBoxmetodoPago);
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                new JScrollPane(area),
+                "Observaciones de la venta",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        String observaciones = result == JOptionPane.OK_OPTION ? area.getText().trim() : "";
+
+
+        Venta ventaCreada = super.crearVenta(modeloDetalle, comboBoxmetodoPago,observaciones);
         if (ventaCreada == null) {
             JOptionPane.showMessageDialog(this,
                     "Error al registrar la venta.",

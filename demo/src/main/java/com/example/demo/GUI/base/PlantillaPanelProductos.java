@@ -137,7 +137,7 @@ public abstract class PlantillaPanelProductos extends BasePanel {
             }
         });
     }
-    protected Venta crearVenta(ModeloTablaVentas modeloDetalle, JComboBox<MetodoPago> metodoPago) {
+    protected Venta crearVenta(ModeloTablaVentas modeloDetalle, JComboBox<MetodoPago> metodoPago,String observaciones) {
 
         List<DetalleVenta> detalles = new ArrayList<>();
         double total = 0;
@@ -168,6 +168,7 @@ public abstract class PlantillaPanelProductos extends BasePanel {
                 .setTotal(total)
                 .setMetodoPago((MetodoPago) metodoPago.getSelectedItem())
                 .setDetalles(detalles) // ← MUY IMPORTANTE
+                .setObservacion(observaciones)
                 .build();
 
         return ventaService.create(ventaDto);

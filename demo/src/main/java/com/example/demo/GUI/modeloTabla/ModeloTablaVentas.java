@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class ModeloTablaVentas extends AbstractTableModel {
 
-    private final String[] columnas= {"Codigo", "Nombre", "Precio Unitario", "Cantidad","Subtotal"};
+    private final String[] columnas= {"Codigo-Barra", "Nombre", "Precio Unitario", "Cantidad","Subtotal"};
     private final List<ItemVentaUI> lista;
     private final ProductoService productoService;
 

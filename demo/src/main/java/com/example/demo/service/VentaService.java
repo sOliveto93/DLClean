@@ -53,7 +53,7 @@ public class VentaService {
         Venta nuevaVenta = new Venta();
         nuevaVenta.setFecha(dto.getFecha());
         nuevaVenta.setMetodoPago(dto.getMetodoPago());
-
+        nuevaVenta.setObservacion(dto.getObsercion());
         //double totalAux = 0;
 
         for (DetalleVenta d : dto.getDetalles()) {
