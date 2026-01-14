@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -24,6 +29,7 @@ public class PanelGestionCaja extends BasePanel {
     private JButton btnMainPanel;
     JButton btnAbrirCaja;
     JButton btnCerrarCaja;
+    JButton btnFiltrar;
     JLabel valEfectivoApertura;
     JLabel fechaHoraApertura;
     JLabel valTotalSistema;
@@ -31,13 +37,17 @@ public class PanelGestionCaja extends BasePanel {
     JLabel valDiferencia;
     JLabel estadoCaja;
     JLabel observaciones;
+    JLabel labelTotalFiltro;
     Caja cajaActual;
     Font labelFont = new Font("SansSerif", Font.PLAIN, 13);
     Font valueFont = new Font("SansSerif", Font.BOLD, 13);
-
+    JSpinner spinnerInicio;
+    JSpinner spinnerFin;
+    DateTimeFormatter fmt;
     public PanelGestionCaja(CajaService cajaService, EventBus eventBus) {
         super(eventBus);
         this.cajaService = cajaService;
+        fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         inicializarComponentes();
     }
 
@@ -53,7 +63,7 @@ public class PanelGestionCaja extends BasePanel {
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.add(configurarPanelEstado(), BorderLayout.NORTH);
         centerPanel.add(configurarPanelListaCajas(), BorderLayout.CENTER);
-
+        centerPanel.add(configurarfiltroTotalCajas(),BorderLayout.SOUTH);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(configurarPanelBotones(), BorderLayout.SOUTH);
 
@@ -61,19 +71,49 @@ public class PanelGestionCaja extends BasePanel {
         configurarListener();
     }
 
-    private JPanel configurarPanelListaCajas() {
+    private JPanel configurarfiltroTotalCajas() {
         JPanel panel=new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Historial de Cajas"));
-        ModeloTablaCajas modelo=new ModeloTablaCajas(cajaService.getLast10());
-        JTable tablaCajas=new JTable(modelo);
+        panel.setBorder(BorderFactory.createTitledBorder("Total facturado entre fechas:"));
+
+        // ===== Panel filtros =====
+        JPanel panelFiltros = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+
+        JLabel lblDesde = new JLabel("Desde:");
+        JLabel lblHasta = new JLabel("Hasta:");
+        labelTotalFiltro=new JLabel("-");
+        spinnerInicio = new JSpinner(new SpinnerDateModel());
+        spinnerInicio.setEditor(new JSpinner.DateEditor(spinnerInicio, "yyyy-MM-dd"));
+
+        spinnerFin = new JSpinner(new SpinnerDateModel());
+        spinnerFin.setEditor(new JSpinner.DateEditor(spinnerFin, "yyyy-MM-dd"));
+
+        btnFiltrar = new JButton("Filtrar");
+
+        panelFiltros.add(lblDesde);
+        panelFiltros.add(spinnerInicio);
+        panelFiltros.add(lblHasta);
+        panelFiltros.add(spinnerFin);
+        panelFiltros.add(btnFiltrar);
+        panelFiltros.add(labelTotalFiltro);
+        panel.add(panelFiltros, BorderLayout.NORTH);
+        return panel;
+    }
+
+    private JPanel configurarPanelListaCajas() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("Historial ultimas 10 Cajas"));
+        // ===== Tabla =====
+        ModeloTablaCajas modelo = new ModeloTablaCajas(cajaService.getLast10());
+        JTable tablaCajas = new JTable(modelo);
 
         tablaCajas.setRowHeight(24);
         tablaCajas.setAutoCreateRowSorter(true);
         tablaCajas.setFillsViewportHeight(true);
         tablaCajas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+        panel.add(new JScrollPane(tablaCajas), BorderLayout.CENTER);
 
-        panel.add(new JScrollPane(tablaCajas),BorderLayout.CENTER);
+
         return panel;
     }
 
@@ -284,6 +324,35 @@ public class PanelGestionCaja extends BasePanel {
         btnMainPanel.addActionListener((e) -> eventBus.publish("mainPanel"));
         btnAbrirCaja.addActionListener(e -> abrirCajaDialog());
         btnCerrarCaja.addActionListener(e -> cerrarCajaDialog());
+        btnFiltrar.addActionListener(e -> {
+            try {
+                LocalDate inicio = null;
+                LocalDate fin = null;
+
+                if (spinnerInicio.getValue() != null) {
+                    Date dInicio = (Date) spinnerInicio.getValue();
+                    inicio = dInicio.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+                }
+
+                if (spinnerFin.getValue() != null) {
+                    Date dFin = (Date) spinnerFin.getValue();
+                    fin = dFin.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+                }
+
+                labelTotalFiltro.setText(
+                        String.format("Total: $%,.2f", cajaService.getVentasEntreFechas(inicio, fin))
+                );
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        });
+
     }
 
     @Override
@@ -307,6 +376,7 @@ public class PanelGestionCaja extends BasePanel {
         valTotalSistema.setText("---");
         valEfectivoEsperado.setText("---");
         valDiferencia.setText("---");
+        labelTotalFiltro.setText("-");
     }
 
     private void actualizarLabels() {
@@ -315,7 +385,9 @@ public class PanelGestionCaja extends BasePanel {
             return;
         }
         valEfectivoApertura.setText(String.valueOf(cajaActual.getEfectivoApertura()));
-        fechaHoraApertura.setText(String.valueOf(cajaActual.getFechaHoraApertura()));
+
+        fechaHoraApertura.setText(cajaActual.getFechaHoraApertura().format(fmt));
+
         estadoCaja.setText(String.valueOf(cajaActual.getEstado()));
         valTotalSistema.setText(String.valueOf(cajaActual.getDineroTotal()));
         valEfectivoEsperado.setText(String.valueOf(cajaActual.getEfectivoEsperado()));

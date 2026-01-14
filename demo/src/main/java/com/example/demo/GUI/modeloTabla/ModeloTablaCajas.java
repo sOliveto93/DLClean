@@ -5,13 +5,14 @@ import com.example.demo.entity.Caja;
 
 import javax.swing.table.AbstractTableModel;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ModeloTablaCajas extends AbstractTableModel {
 
     private List<Caja> lista;
     private String[] columnas = {"ID", "Apertura", "Cierre", "Estado", "Total"};
-
+    private final static DateTimeFormatter fmt=DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     @Override
     public String getColumnName(int column) {
         return columnas[column];
@@ -42,9 +43,9 @@ public class ModeloTablaCajas extends AbstractTableModel {
             case 0:
                 return c.getId();
             case 1:
-                return c.getFechaHoraApertura();
+                return c.getFechaHoraApertura() != null ?c.getFechaHoraApertura().format(fmt):"";
             case 2:
-                return c.getFechaHoraCierre();
+                return c.getFechaHoraCierre() != null ?c.getFechaHoraCierre().format(fmt):"";
             case 3:
                 return c.getEstado();
             case 4:

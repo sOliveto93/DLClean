@@ -9,6 +9,7 @@ import com.example.demo.entity.Venta;
 import com.example.demo.repository.CajaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +81,19 @@ public class CajaService {
 
     public List<Caja> getLast10() {
         return cr.findTop10ByOrderByFechaHoraAperturaDesc();
-
     }
+    public Double getVentasEntreFechas(LocalDate inicio, LocalDate fin) {
+        LocalDateTime inicioDT = inicio != null
+                ? inicio.atStartOfDay()
+                : null;
+
+        LocalDateTime finDT = fin != null
+                ? fin.plusDays(1).atStartOfDay()
+                : null;
+
+        return cr.totalCajaEntreFechas(inicioDT, finDT);
+    }
+
+
+
 }
