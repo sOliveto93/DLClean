@@ -53,6 +53,7 @@ public class ProductoService {
         Producto p = new Producto();
         p.setNombre(dto.getNombre());
         p.setCodigo(dto.getCodigo());
+        p.setPrecioCosto(dto.getPrecioCosto());
         p.setPrecioVenta(dto.getPrecio());
         p.setCategoria(dto.getCategoria());
         p.setStock(dto.getStock());
