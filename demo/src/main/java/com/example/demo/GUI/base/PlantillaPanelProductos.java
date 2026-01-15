@@ -65,7 +65,18 @@ public abstract class PlantillaPanelProductos extends BasePanel {
 
     }
 
-
+    protected void cargarProductoByCodigoBarra(String busqueda){
+       List<Producto> lista=new ArrayList<>();
+        if (busqueda != null && !busqueda.isEmpty()) {
+            Optional<Producto> op= productoService.getByCodigoBarra(busqueda);
+            if(op.isPresent()){
+                lista.add((Producto)op.get());
+                modeloTabla.setProductos(lista);
+            }else {
+                JOptionPane.showMessageDialog(this, "No se encontró el producto con ese código de barras.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
     protected void cargarProductos(String busqueda) {
         List<Producto> lista = new ArrayList<>();
         if (busqueda == null || busqueda.isEmpty()) {
@@ -195,6 +206,20 @@ public abstract class PlantillaPanelProductos extends BasePanel {
         panel.add(txtBuscar);
 
         panel.add(btnListar);
+//--------------------------------------
+        // Campo exclusivo para código de barra
+        JTextField txtCodigoBarra = new JTextField(10);
+        txtCodigoBarra.addActionListener(e -> {
+            String codigo = txtCodigoBarra.getText().trim();
+            if (!codigo.isEmpty()) {
+                cargarProductoByCodigoBarra(codigo);
+
+                txtCodigoBarra.setText(""); // limpio el campo para el próximo escaneo
+            }
+        });
+        panel.add(new JLabel("Buscar Por Codigo-Barra:"));
+        panel.add(txtCodigoBarra);
+
 
         return panel;
     }

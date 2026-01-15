@@ -9,10 +9,14 @@ import com.example.demo.dto.ProductoDto;
 import com.example.demo.entity.Producto;
 import com.example.demo.service.ProductoService;
 import com.example.demo.service.VentaService;
+import com.example.demo.utils.ImageLoader;
+import com.example.demo.utils.Toast;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 
@@ -49,8 +53,10 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
     private Producto productoSeleccionado;
 
+    private ImageLoader imageLoader;
     public PanelCrudProductos(ProductoService productoService,VentaService ventaService, EventBus eventBus) {
         super(productoService,ventaService,eventBus);
+        imageLoader=ImageLoader.getInstance();
         inicializarComponentes();
         productoSeleccionado = null;
     }
@@ -180,7 +186,6 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         titulo.setFont(new Font("SansSerif", Font.BOLD, 16));
         titulo.setForeground(Color.DARK_GRAY);
         titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         panelDeEdicion.add(titulo, BorderLayout.NORTH);
 
         JPanel panelDatosProducto = new JPanel(new GridBagLayout());
@@ -192,7 +197,7 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
         int row = 0;
 
-        // ===== INICIALIZACIÓN =====
+        // ===== INICIALIZACIÓN DE LABELS Y CAMPOS =====
         labelProductoCodigo = new JLabel("-");
         labelProductoNombre = new JLabel("-");
         labelProductoCategoria = new JLabel("-");
@@ -200,10 +205,10 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         labelProductoPrecio = new JLabel("-");
         labelProductoStock = new JLabel("-");
         labelProductoCodigoBarra = new JLabel("-");
-        labelMarkup=new JLabel("-");
+        labelMarkup = new JLabel("-");
 
         txtNombreNuevo = new JTextField();
-        comboCategoriaNueva = new JComboBox<Categoria>(Categoria.values());
+        comboCategoriaNueva = new JComboBox<>(Categoria.values());
         comboCategoriaNueva.setSelectedIndex(-1);
         txtPrecioCostoNuevo = new JTextField();
         txtPrecioNuevo = new JTextField();
@@ -214,45 +219,88 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         chkEliminarCodigoBarra.setBackground(Color.WHITE);
         chkEliminarCodigoBarra.setEnabled(false);
 
-
         // ===== FILAS =====
-        /*
-        agregarFila(panelDatosProducto, gbc, row++, "Código", labelProductoCodigo, null);
-        agregarFila(panelDatosProducto, gbc, row++, "Nombre", labelProductoNombre, txtNombreNuevo);
-        agregarFila(panelDatosProducto, gbc, row++, "Categoría", labelProductoCategoria, comboCategoriaNueva);
-        agregarFila(panelDatosProducto, gbc, row++, "Costo", labelProductoPrecioCosto, txtPrecioCostoNuevo);
-        agregarFila(panelDatosProducto, gbc, row++, "Precio", labelProductoPrecio, txtPrecioNuevo);
-        agregarFila(panelDatosProducto, gbc, row++, "Stock", labelProductoStock, txtStockNuevo);
-        agregarFila(panelDatosProducto, gbc, row++, "Código Barra", labelProductoCodigoBarra, txtCodigoBarraNuevo);
-        */
+
+        // Código
         agregarCampoVertical(panelDatosProducto, gbc, row++, "Código", labelProductoCodigo, null);
-        agregarCampoVertical(panelDatosProducto, gbc, row++, "Nombre", labelProductoNombre, txtNombreNuevo);
+
+        // Nombre con botón copiar
+        gbc.gridy = row++;
+        JPanel panelNombre = new JPanel();
+        panelNombre.setLayout(new BoxLayout(panelNombre, BoxLayout.X_AXIS));
+        panelNombre.setBackground(Color.WHITE);
+        JButton btnCopiarNombre = new JButton("");
+        Optional<BufferedImage> opNombre=imageLoader.getImage("reportesPNG");
+        opNombre.ifPresent(img->btnCopiarNombre.setIcon(new ImageIcon(img.getScaledInstance(16,16,Image.SCALE_SMOOTH))));
+
+        btnCopiarNombre.addActionListener(e -> {
+            copiarAlPortapapeles(labelProductoNombre.getText());
+            Toast.mostrarToast("Nombre copiado");
+        });
+        panelNombre.add(labelProductoNombre);
+        panelNombre.add(Box.createHorizontalStrut(5));
+        panelNombre.add(btnCopiarNombre);
+        panelDatosProducto.add(panelNombre, gbc);
+
+        // Nombre editable
+        agregarCampoVertical(panelDatosProducto, gbc, row++, "Nombre", new JLabel(""), txtNombreNuevo);
+
+        // Categoría
         agregarCampoVertical(panelDatosProducto, gbc, row++, "Categoría", labelProductoCategoria, comboCategoriaNueva);
+
+        // Costo
         agregarCampoVertical(panelDatosProducto, gbc, row++, "Costo", labelProductoPrecioCosto, txtPrecioCostoNuevo);
+
+        // Markup
         gbc.gridy = row++;
         JPanel markupPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         markupPanel.setBackground(Color.WHITE);
         markupPanel.add(labelMarkup);
         panelDatosProducto.add(markupPanel, gbc);
+
+        // Precio
         agregarCampoVertical(panelDatosProducto, gbc, row++, "Precio", labelProductoPrecio, txtPrecioNuevo);
+
+        // Stock
         agregarCampoVertical(panelDatosProducto, gbc, row++, "Stock", labelProductoStock, txtStockNuevo);
-        agregarCampoVertical(panelDatosProducto, gbc, row++, "Código de barras", labelProductoCodigoBarra, txtCodigoBarraNuevo);
+
+        // Código de barras con botón copiar
+        gbc.gridy = row++;
+        JPanel panelCodigoBarra = new JPanel();
+        panelCodigoBarra.setLayout(new BoxLayout(panelCodigoBarra, BoxLayout.X_AXIS));
+        panelCodigoBarra.setBackground(Color.WHITE);
+        JButton btnCopiarCodigoBarra = new JButton("");
+
+        Optional<BufferedImage> opCodigoBarra=imageLoader.getImage("reportesPNG");
+        opCodigoBarra.ifPresent(img->btnCopiarCodigoBarra.setIcon(new ImageIcon(img.getScaledInstance(16,16,Image.SCALE_SMOOTH))));
+
+        btnCopiarCodigoBarra.addActionListener(e -> {
+            copiarAlPortapapeles(labelProductoCodigoBarra.getText());
+            Toast.mostrarToast("Codigo Barra copiado");
+        });
+        panelCodigoBarra.add(labelProductoCodigoBarra);
+        panelCodigoBarra.add(Box.createHorizontalStrut(5));
+        panelCodigoBarra.add(btnCopiarCodigoBarra);
+        panelDatosProducto.add(panelCodigoBarra, gbc);
+
+        // Código de barras editable
+        agregarCampoVertical(panelDatosProducto, gbc, row++, "Código de barras", new JLabel(""), txtCodigoBarraNuevo);
+
+        // Checkbox eliminar
         gbc.gridy = row++;
         JPanel chkPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         chkPanel.setBackground(Color.WHITE);
         chkPanel.add(chkEliminarCodigoBarra);
         panelDatosProducto.add(chkPanel, gbc);
 
-        JScrollPane scroll=new JScrollPane(panelDatosProducto);
+        // Scroll
+        JScrollPane scroll = new JScrollPane(panelDatosProducto);
         scroll.setBorder(null);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(16); // scroll suave
         scroll.setBackground(Color.WHITE);
         scroll.getViewport().setBackground(Color.WHITE);
-
         panelDeEdicion.add(scroll, BorderLayout.CENTER);
-
-
 
         // ===== BOTONES =====
         JPanel panelBotones = new JPanel(new GridLayout(3, 1, 5, 5));
@@ -272,6 +320,18 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
         configurarEventos();
         return panelDeEdicion;
     }
+
+
+    private void copiarAlPortapapeles(String texto) {
+        if (texto != null && !texto.isEmpty()) {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(texto), null);
+
+        } else {
+            // limpiar portapapeles
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+        }
+    }
+
 
     public void setProductoSeleccionado(Producto producto) {
         this.productoSeleccionado = producto;
@@ -469,4 +529,8 @@ public class PanelCrudProductos extends PlantillaPanelProductos {
 
 
     }
+
+
+
+
 }
